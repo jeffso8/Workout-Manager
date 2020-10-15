@@ -43,9 +43,8 @@ public class Workout {
             case LEGS:
                 this.legExercises.add(ex);
                 break;
-            case SHOULDERS:
+            default:
                 this.shoulderExercises.add(ex);
-                break;
         }
     }
 

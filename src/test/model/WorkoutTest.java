@@ -29,13 +29,29 @@ public class WorkoutTest {
     public void storeExerciseTest(){
         Exercise ex = new Exercise("Barbell Bench Press", CHEST);
         Exercise ex1 = new Exercise("Shoulder Press", SHOULDERS);
+        Exercise ex2 = new Exercise("Back Squat", LEGS);
+        Exercise ex3 = new Exercise("Bicep Curls", ARMS);
+        Exercise ex4 = new Exercise("Deadlifts", BACK);
 
         assertTrue(testWorkout.getChestExercises().isEmpty());
         testWorkout.storeExercise(ex);
         assertFalse(testWorkout.getChestExercises().isEmpty());
+
         assertTrue(testWorkout.getShoulderExercises().isEmpty());
         testWorkout.storeExercise(ex1);
         assertFalse(testWorkout.getShoulderExercises().isEmpty());
+
+        assertTrue(testWorkout.getLegExercises().isEmpty());
+        testWorkout.storeExercise(ex2);
+        assertFalse(testWorkout.getLegExercises().isEmpty());
+
+        assertTrue(testWorkout.getArmExercises().isEmpty());
+        testWorkout.storeExercise(ex3);
+        assertFalse(testWorkout.getArmExercises().isEmpty());
+
+        assertTrue(testWorkout.getBackExercises().isEmpty());
+        testWorkout.storeExercise(ex4);
+        assertFalse(testWorkout.getBackExercises().isEmpty());
 
     }
 
