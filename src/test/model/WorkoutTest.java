@@ -77,7 +77,7 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex2);
         Exercise ex3 = new Exercise("Triceps Extensions", ARMS);
         testWorkout.storeExercise(ex3);
-        Exercise ex4 = new Exercise("Spider Curls", ARMS);
+        Exercise ex4 = new Exercise("Bicep Curls", ARMS);
         testWorkout.storeExercise(ex4);
 
         //Run mondayWorkout, and a list of exercises should be returned

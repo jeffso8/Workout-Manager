@@ -34,4 +34,6 @@
 - As a user, I want to be able to create different workouts for different days
 - As a user, I want to be able to select a certain muscle group and add a workout
 - As a user, I want to be able to select a specific exercise and add statistics to it
-
+- As a user, I want to be able to save my exercise lists to file
+- As a user, I want to be able to load my exercise lists from file
+- As a user, when I start the application I want to be given the option to load from file

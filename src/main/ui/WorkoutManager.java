@@ -3,19 +3,28 @@ package ui;
 import model.Exercise;
 import model.ExerciseType;
 import model.Workout;
+import persistence.Reader;
+import persistence.Writer;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
 // Workout Manager Application
 public class WorkoutManager {
-    Workout workout;
+    private static final String JSON_STORE = "./data/workout.json";
 
+    Workout workout;
     Scanner scanner = new Scanner(System.in);
+    private Writer jsonWriter;
+    private Reader jsonReader;
 
     // EFFECTS: runs the Workout Manager Application
     public WorkoutManager() {
         workout = new Workout();
+        jsonWriter = new Writer(JSON_STORE);
+        jsonReader = new Reader(JSON_STORE);
         run();
     }
 
@@ -27,7 +36,8 @@ public class WorkoutManager {
         do {
             showMenu("Please Select an Option", "1. View Workout Today",
                     "2. Update Exercise", "3. Add Exercise",
-                    "4. View All Exercises", "5. Exit");
+                    "4. View All Exercises", "5. Save Workout to File",
+                    "6. Load Workout from File","7. Exit");
             response = scanner.nextLine();
 
             switch (response) {
@@ -43,18 +53,26 @@ public class WorkoutManager {
                 case "4":
                     viewExercises();
                     break;
+                case "5":
+                    saveWorkout();
+                    break;
+                case "6":
+                    loadWorkout();
+                    break;
             }
-        } while (!response.equals("5"));
+        } while (!response.equals("7"));
     }
 
     //EFFECTS: allows inputted strings to be printed as a menu
-    private void showMenu(String s2, String s3, String s4, String s5, String s6, String s7) {
+    private void showMenu(String s2, String s3, String s4, String s5, String s6, String s7, String s8, String s9) {
         System.out.println(s2);
         System.out.println(s3);
         System.out.println(s4);
         System.out.println(s5);
         System.out.println(s6);
         System.out.println(s7);
+        System.out.println(s8);
+        System.out.println(s9);
 
     }
 
@@ -125,6 +143,29 @@ public class WorkoutManager {
         for (Exercise e : workout.getAllExercises()) {
             System.out.println("(" + e.getName() + ", " + e.getType());
             System.out.println("Weight: " + e.getWeight() + " lbs" + " )");
+        }
+    }
+
+    // EFFECTS: saves the workroom to file
+    private void saveWorkout() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(workout);
+            jsonWriter.close();
+            System.out.println("Saved workout to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads workout from file
+    private void loadWorkout() {
+        try {
+            workout = jsonReader.read();
+            System.out.println("Loaded workout from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 

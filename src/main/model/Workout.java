@@ -1,11 +1,15 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 //Represents a Workout having exercises that are split into specific containers
-public class Workout {
+public class Workout implements Writable {
     private List<Exercise> chestExercises;
     private List<Exercise> armExercises;
     private List<Exercise> backExercises;
@@ -176,6 +180,23 @@ public class Workout {
         return exerciseList;
     }
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("all-exercises", exercisesToJson());
+        return json;
+    }
+
+    // EFFECTS: returns things in this workroom as a JSON array
+    private JSONArray exercisesToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Exercise e : allExercises) {
+            jsonArray.put(e.toJson());
+        }
+
+        return jsonArray;
+    }
 
 
 }

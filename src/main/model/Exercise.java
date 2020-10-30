@@ -1,6 +1,9 @@
 package model;
 
-public class Exercise {
+import org.json.JSONObject;
+import persistence.Writable;
+
+public class Exercise implements Writable {
 
     private ExerciseType type;
     private int weight;
@@ -58,4 +61,11 @@ public class Exercise {
         sets = num;
     }
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("muscle-type", type);
+        return json;
+    }
 }
