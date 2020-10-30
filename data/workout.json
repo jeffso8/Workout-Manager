@@ -1,0 +1,18 @@
+{"all-exercises": [
+    {
+        "name": "BICEP CURLS",
+        "muscle-type": "ARMS"
+    },
+    {
+        "name": "BENCH PRESS",
+        "muscle-type": "CHEST"
+    },
+    {
+        "name": "CABLE ROWS",
+        "muscle-type": "BACK"
+    },
+    {
+        "name": "DEADLIFTS",
+        "muscle-type": "BACK"
+    }
+]}

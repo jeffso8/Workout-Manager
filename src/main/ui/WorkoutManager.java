@@ -34,31 +34,22 @@ public class WorkoutManager {
         System.out.println("Welcome to your Workout Manager");
         String response;
         do {
-            showMenu("Please Select an Option", "1. View Workout Today",
-                    "2. Update Exercise", "3. Add Exercise",
-                    "4. View All Exercises", "5. Save Workout to File",
+            showMenu("Please Select an Option", "1. View Workout Today", "2. Update Exercise",
+                    "3. Add Exercise", "4. View All Exercises", "5. Save Workout to File",
                     "6. Load Workout from File","7. Exit");
             response = scanner.nextLine();
-
-            switch (response) {
-                case "1":
-                    viewWorkoutToday();
-                    break;
-                case "2":
-                    updateExercise();
-                    break;
-                case "3":
-                    addExercise();
-                    break;
-                case "4":
-                    viewExercises();
-                    break;
-                case "5":
-                    saveWorkout();
-                    break;
-                case "6":
-                    loadWorkout();
-                    break;
+            if (response.equals("1")) {
+                viewWorkoutToday();
+            } else if (response.equals("2")) {
+                updateExercise();
+            } else if (response.equals("3")) {
+                addExercise();
+            } else if (response.equals("4")) {
+                viewExercises();
+            } else if (response.equals("5")) {
+                saveWorkout();
+            } else if (response.equals("6")) {
+                loadWorkout();
             }
         } while (!response.equals("7"));
     }
@@ -146,6 +137,7 @@ public class WorkoutManager {
         }
     }
 
+    //References JsonSerializationDemo
     // EFFECTS: saves the workroom to file
     private void saveWorkout() {
         try {
@@ -158,6 +150,7 @@ public class WorkoutManager {
         }
     }
 
+    //References JsonSerializationDemo
     // MODIFIES: this
     // EFFECTS: loads workout from file
     private void loadWorkout() {

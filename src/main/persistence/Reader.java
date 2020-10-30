@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+ //Referenced JsonDemo Code Provided By UBC
 public class Reader {
     private String source;
 
@@ -56,8 +57,8 @@ public class Reader {
         }
     }
 
-    // MODIFIES: wr
-    // EFFECTS: parses exercise from JSON object and adds it to workroom
+    // MODIFIES: w
+    // EFFECTS: parses exercise from JSON object and adds it to workout
     private void addExercise(Workout w, JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         ExerciseType type = ExerciseType.valueOf(jsonObject.getString("muscle-type"));
