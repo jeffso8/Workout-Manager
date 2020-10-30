@@ -1,0 +1,10 @@
+{"all-exercises": [
+    {
+        "name": "Bicep Curls",
+        "type": "ARMS"
+    },
+    {
+        "name": "Bench Press",
+        "type": "CHEST"
+    }
+]}

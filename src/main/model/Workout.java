@@ -191,7 +191,7 @@ public class Workout implements Writable {
     private JSONArray exercisesToJson() {
         JSONArray jsonArray = new JSONArray();
 
-        for (Exercise e : allExercises) {
+        for (Exercise e : this.getAllExercises()) {
             jsonArray.put(e.toJson());
         }
 

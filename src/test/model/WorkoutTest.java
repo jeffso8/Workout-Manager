@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -152,6 +154,18 @@ public class WorkoutTest {
         assertFalse(testWorkout.thursdayWorkout().isEmpty());
         assertEquals(testWorkout.thursdayWorkout().size(), 5);
 
+    }
+
+    @Test
+    public void toJsonTest() {
+        testWorkout.storeExercise(new Exercise("Bench Press", CHEST));
+        JSONObject json = testWorkout.toJson();
+        JSONArray jsonArray = json.getJSONArray("all-exercises");
+        JSONObject jsonExercises = jsonArray.getJSONObject(0);
+        String ExerciseName = jsonExercises.getString("name");
+        String MuscleType = jsonExercises.getString("type");
+        assertEquals(ExerciseName, "Bench Press");
+        assertEquals(MuscleType, "CHEST");
     }
 
 

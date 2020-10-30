@@ -41,4 +41,9 @@ public class ExerciseTest {
         testExercise.setReps(12);
         assertEquals(testExercise.getReps(), 12);
     }
+
+    @Test
+    public void jsonObjectTest() {
+
+    }
 }

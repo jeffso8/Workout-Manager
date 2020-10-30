@@ -6,13 +6,5 @@
     {
         "name": "BENCH PRESS",
         "type": "CHEST"
-    },
-    {
-        "name": "CABLE ROWS",
-        "type": "BACK"
-    },
-    {
-        "name": "DEADLIFTS",
-        "type": "BACK"
     }
 ]}

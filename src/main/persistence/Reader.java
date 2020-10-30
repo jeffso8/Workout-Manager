@@ -61,7 +61,7 @@ public class Reader {
     // EFFECTS: parses exercise from JSON object and adds it to workout
     private void addExercise(Workout w, JSONObject jsonObject) {
         String name = jsonObject.getString("name");
-        ExerciseType type = ExerciseType.valueOf(jsonObject.getString("muscle-type"));
+        ExerciseType type = ExerciseType.valueOf(jsonObject.getString("type"));
         Exercise e1 = new Exercise(name, type);
         w.storeExercise(e1);
     }
