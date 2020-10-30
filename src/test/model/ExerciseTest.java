@@ -1,8 +1,10 @@
 package model;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExerciseTest {
     private Exercise testExercise;
@@ -43,7 +45,11 @@ public class ExerciseTest {
     }
 
     @Test
-    public void jsonObjectTest() {
-
+    public void toJsonTest() {
+        JSONObject json = testExercise.toJson();
+        String exerciseName = json.getString("name");
+        Object muscleType = json.get("type");
+        assertEquals(exerciseName, "Bench Press");
+        assertEquals(muscleType, ExerciseType.CHEST);
     }
 }

@@ -1,5 +1,5 @@
 package model;
 
 public enum ExerciseType {
-  ARMS, CHEST, SHOULDERS, BACK, LEGS
+  ARMS, CHEST, SHOULDERS, BACK, LEGS;
 }

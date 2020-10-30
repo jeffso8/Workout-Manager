@@ -162,10 +162,12 @@ public class WorkoutTest {
         JSONObject json = testWorkout.toJson();
         JSONArray jsonArray = json.getJSONArray("all-exercises");
         JSONObject jsonExercises = jsonArray.getJSONObject(0);
-        String ExerciseName = jsonExercises.getString("name");
-        String MuscleType = jsonExercises.getString("type");
-        assertEquals(ExerciseName, "Bench Press");
-        assertEquals(MuscleType, "CHEST");
+        System.out.println(jsonExercises);
+        String exerciseName = jsonExercises.getString("name");
+        Object muscleType = jsonExercises.get("type");
+
+        assertEquals(exerciseName, "Bench Press");
+        assertEquals(muscleType, CHEST);
     }
 
 
