@@ -150,7 +150,6 @@ public class Workout implements Writable {
         exerciseList.add(this.getOneLegExercise());
 
         return exerciseList;
-
     }
 
     //REQUIRES: At least 4 exercises in the Shoulders Exercise array, and at least 2 exercises in the Arm Exercise Array

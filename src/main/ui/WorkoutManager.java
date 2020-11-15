@@ -6,7 +6,6 @@ import model.Workout;
 import persistence.Reader;
 import persistence.Writer;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -145,7 +144,7 @@ public class WorkoutManager {
             jsonWriter.write(workout);
             jsonWriter.close();
             System.out.println("Saved workout to " + JSON_STORE);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("Unable to write to file: " + JSON_STORE);
         }
     }

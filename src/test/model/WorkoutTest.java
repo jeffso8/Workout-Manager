@@ -86,7 +86,6 @@ public class WorkoutTest {
         testWorkout.mondayWorkout();
         assertFalse(testWorkout.mondayWorkout().isEmpty());
         assertEquals(testWorkout.mondayWorkout().size(), 5);
-
     }
 
     @Test
@@ -104,6 +103,7 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex4);
 
         //Run tuesdayWorkout, and a list of exercises should be returned
+
         testWorkout.tuesdayWorkout();
         assertFalse(testWorkout.tuesdayWorkout().isEmpty());
         assertEquals(testWorkout.tuesdayWorkout().size(), 4);
@@ -127,10 +127,10 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex5);
 
         //Run wednesdayWorkout, and a list of exercises should be returned
+
         testWorkout.wednesdayWorkout();
         assertFalse(testWorkout.wednesdayWorkout().isEmpty());
         assertEquals(testWorkout.wednesdayWorkout().size(), 5);
-
     }
 
     @Test
@@ -150,6 +150,7 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex5);
 
         //Run thursdayWorkout, and a list of exercises should be returned
+
         testWorkout.thursdayWorkout();
         assertFalse(testWorkout.thursdayWorkout().isEmpty());
         assertEquals(testWorkout.thursdayWorkout().size(), 5);
