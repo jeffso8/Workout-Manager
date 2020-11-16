@@ -74,7 +74,6 @@ public class WorkoutManager {
         System.out.println("Please enter exercise type (CHEST, ARMS, LEGS, SHOULDERS, BACK)");
         ExerciseType e1 = ExerciseType.valueOf(scanner.nextLine().toUpperCase());
         workout.storeExercise(new Exercise(name, e1));
-
     }
 
     //MODIFIES: this

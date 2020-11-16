@@ -37,3 +37,10 @@
 - As a user, I want to be able to save my exercise lists to file
 - As a user, I want to be able to load my exercise lists from file
 - As a user, when I start the application I want to be given the option to load from file
+
+#### GUI Specific User Stories: 
+- As a user, when I start the interface, I want to have the previous file loaded
+- As a user, I want to be able to scroll through and view all the exercises on the main panel
+- As a user, I want to be able to add, update, remove and find individual exercises
+- As a user, I want to be able to view workouts for every day of the week, and be able to configure them
+- As a user, I want my data to be saved everytime we exit the GUI

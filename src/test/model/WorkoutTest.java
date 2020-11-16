@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.WorkoutsMissingException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -127,7 +128,6 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex5);
 
         //Run wednesdayWorkout, and a list of exercises should be returned
-
         testWorkout.wednesdayWorkout();
         assertFalse(testWorkout.wednesdayWorkout().isEmpty());
         assertEquals(testWorkout.wednesdayWorkout().size(), 5);
@@ -150,11 +150,9 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex5);
 
         //Run thursdayWorkout, and a list of exercises should be returned
-
         testWorkout.thursdayWorkout();
         assertFalse(testWorkout.thursdayWorkout().isEmpty());
         assertEquals(testWorkout.thursdayWorkout().size(), 5);
-
     }
 
     @Test
