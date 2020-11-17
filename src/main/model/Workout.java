@@ -210,14 +210,13 @@ public class Workout implements Writable {
     //EFFECTS: produces the exercise with given name in all workouts, or null if not found
     public Exercise findExercise(String name) {
         name = name.toUpperCase();
-        Exercise found = null;
         for (Exercise e : allExercises) {
             String upperName =  e.getName().toUpperCase();
             if (upperName.equals(name)) {
-                found = e;
+                return e;
             }
         }
-        return found;
+        return null;
     }
 
     //MODIFIES: this

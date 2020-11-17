@@ -76,9 +76,8 @@ public class WorkoutManagerProgram extends JFrame {
         menuBar.add(file);
         fileMenu();
         JMenu addExercise = new JMenu("Add Exercise");
-        JMenu viewWorkouts = new JMenu("View Workouts");
         exerciseMenu(addExercise);
-        workoutMenu(viewWorkouts);
+        workoutMenu();
     }
 
     //MODIFIES: this
@@ -99,7 +98,7 @@ public class WorkoutManagerProgram extends JFrame {
         scroller = new JScrollPane();
         exerciseStringList = new JList<>(listModel);
         exerciseStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        exerciseStringList.setFont(new Font("System", Font.PLAIN, 24));
+        exerciseStringList.setFont(new Font("Geneva", Font.PLAIN, 21));
         scroller.setViewportView(exerciseStringList);
         exerciseStringList.setLayoutOrientation(JList.VERTICAL);
         add(scroller);
@@ -125,13 +124,12 @@ public class WorkoutManagerProgram extends JFrame {
     //MODIFIES: this
     //EFFECTS: adds a button to bottom panel that opens the selected exercise item
     private void addButtonViewExercise() {
-        //add a displayexercise model
         openButton = new JButton(new AbstractAction("Open Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = exerciseStringList.getSelectedIndex();
                 Exercise selectedItem = exerciseList.get(index);
-
+                displayPopupExercise(selectedItem);
             }
         });
         openButton.setFont(new Font("System", Font.PLAIN, 20));
@@ -151,18 +149,21 @@ public class WorkoutManagerProgram extends JFrame {
         JMenuItem editExercise = new JMenuItem(new AbstractAction("Edit Exercises") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                editExercise();
             }
         });
         exercises.add(editExercise);
         JMenuItem removeExercise = new JMenuItem(new AbstractAction("Remove Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                removeExercise();
             }
         });
         exercises.add(removeExercise);
         JMenuItem findExercises = new JMenuItem(new AbstractAction("Find Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                findExercise();
             }
         });
         exercises.add(findExercises);
@@ -217,7 +218,7 @@ public class WorkoutManagerProgram extends JFrame {
 
     //MODIFIES: this
     //EFFECTS: adds a dropdown menu to workouts
-    private void workoutMenu(JMenu viewWorkouts) {
+    private void workoutMenu() {
         JMenuItem mondayWorkout = new JMenuItem(new AbstractAction("Monday") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -232,12 +233,12 @@ public class WorkoutManagerProgram extends JFrame {
             }
         });
         workouts.add(tuesdayWorkout);
-        workoutMenuContinued(viewWorkouts);
+        workoutMenuContinued();
     }
 
     //MODIFIES: this
     //EFFECTS: adds dropdown menu to workouts
-    private void workoutMenuContinued(JMenu viewWorkouts) {
+    private void workoutMenuContinued() {
         JMenuItem wednesdayWorkout = new JMenuItem(new AbstractAction("Wednesday") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -254,7 +255,10 @@ public class WorkoutManagerProgram extends JFrame {
         workouts.add(thursdayWorkout);
     }
 
+    //MODIFIES: this
+    //EFFECTS: creates a new label and workout list for each workout day
     private void workoutDay(String weekday) {
+        eastLabelPanel.remove(workoutDayLabel);
         switch (weekday) {
             case "Monday":
                 createExerciseList(myWorkout.mondayWorkout());
@@ -269,6 +273,125 @@ public class WorkoutManagerProgram extends JFrame {
                 createExerciseList(myWorkout.thursdayWorkout());
                 break;
         }
+    }
+
+    //https://stackoverflow.com/questions/11494222/how-to-handle-cancel-button-in-joptionpane/11494262
+    //MODIFIES: this
+    //EFFECTS: Edits the exercise if found by providing an edit menu for the inputted exercise
+    private void editExercise() {
+        String exerciseName = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "What is the name of the exercise you want to edit?", "Edit Exercise",
+                JOptionPane.PLAIN_MESSAGE, EDIT, null, "");
+        if (exerciseName != null) {
+            exerciseName = exerciseName.toUpperCase();
+            if (null != myWorkout.findExercise(exerciseName)) {
+                Exercise exercise = myWorkout.findExercise(exerciseName);
+                editMenu(exercise);
+            } else {
+                errorMessage("Exercise of name " + exerciseName + " was not found.");
+            }
+        } else {
+            createExerciseList(myWorkout.getAllExercises());
+        }
+    }
+
+    //https://stackoverflow.com/questions/33961793/custom-icon-joptionpane-showinputdialog
+    //MODIFIES: this
+    //EFFECTS: removes the exercise item selected
+    private void removeExercise() {
+        String exerciseName = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "What is the name of the Exercise you want to remove?", "Remove Exercise",
+                JOptionPane.PLAIN_MESSAGE, REMOVE, null, "");
+        if (exerciseName != null) {
+            exerciseName = exerciseName.toUpperCase();
+            if (myWorkout.removeExercise(exerciseName)) {
+                informationMessage(exerciseName + " was successfully removed from your workouts.",
+                        "Removed");
+            } else {
+                errorMessage("The exercise with inputted name " + exerciseName + " was not found in your workouts");
+            }
+            updateExerciseList();
+        } else {
+            createExerciseList(myWorkout.getAllExercises());
+        }
+    }
+
+    //https://stackoverflow.com/questions/33961793/custom-icon-joptionpane-showinputdialog
+    //EFFECTS: finds and opens exercise if it exists
+    private void findExercise() {
+        String exerciseName = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "What is the name of the exercise you want to find?", "Find Exercise",
+                JOptionPane.PLAIN_MESSAGE, FIND, null, "");
+        if (exerciseName != null) {
+            exerciseName = exerciseName.toUpperCase();
+            if (null != myWorkout.findExercise(exerciseName)) {
+                Exercise exercise = myWorkout.findExercise(exerciseName);
+                displayPopupExercise(exercise);
+            } else {
+                errorMessage("The exercise with inputted name " + exerciseName + " was not found in Workouts.");
+            }
+        } else {
+            createExerciseList(myWorkout.getAllExercises());
+        }
+    }
+
+    //https://stackoverflow.com/questions/6975736/java-joptionpane-showmessagedialog-custom-icon-problem
+    //EFFECTS: Displays an exercise in a pop up with details and a picture
+    private void displayPopupExercise(Exercise exercise) {
+        ImageIcon icon = getMuscleTypeImage(exercise);
+        JOptionPane.showMessageDialog(WorkoutManagerProgram.this, displayExerciseInfo(exercise),
+                exercise.getName(), JOptionPane.INFORMATION_MESSAGE, icon);
+    }
+
+    //https://stackoverflow.com/questions/11494222/how-to-handle-cancel-button-in-joptionpane
+    //https://www.roseindia.net/tutorial/java/swing/comboinjoptionpane.html
+    //MODIFIES: this
+    //EFFECTS: completes the editing and selects field & new name for field
+    private void editMenu(Exercise exercise) {
+        String [] editOptions = new String[] {"Name", "Weight","Type","Sets","Reps"};
+        String editSelection = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "This Exercise currently has the following statistics and details:\n"
+                    + displayExerciseInfo(exercise) + "\n\nWhat would you like to edit?", "Details & Stats",
+                    JOptionPane.INFORMATION_MESSAGE, EDIT, editOptions,"Name");
+
+        String changedValue = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "Input the updated value of the exercise " + editSelection + "!", "Details & Stats",
+                     JOptionPane.INFORMATION_MESSAGE, EDIT, null,null);
+
+        if (changedValue != null) {
+            editMenuSelections(editSelection, exercise, changedValue);
+        } else {
+            editExercise();
+        }
+    }
+
+    //EFFECTS: helper for edit menu to decrease method length, and ease of understanding, if the selection is equal
+    private void editMenuSelections(String selection, Exercise ex, String changedValue) {
+        switch (selection) {
+            case "Name":
+                ex.setName(changedValue);
+                break;
+            case "Weight":
+                ex.setWeight(Integer.parseInt(changedValue));
+                break;
+            case "Type":
+                ex.setType(ExerciseType.valueOf(changedValue));
+                break;
+            case "Sets":
+                ex.setSets(Integer.parseInt(changedValue));
+                break;
+            case "Reps":
+                ex.setReps(Integer.parseInt(changedValue));
+        }
+        informationMessage("The " + selection + " is now " + changedValue + "!", "Item Edited");
+        updateExerciseList();
+    }
+
+    //EFFECTS: prints out the information of the selected exercise
+    private String displayExerciseInfo(Exercise exercise) {
+        return "Name: " + exercise.getName() + "\nWeight: " + exercise.getWeight()
+            + "\nType: " + exercise.getType() + "\nSets: " + exercise.getSets()
+            + "\nReps: " + exercise.getReps();
     }
 
     //EFFECTS: adds the inputted exercise to the list of exercises
@@ -289,19 +412,20 @@ public class WorkoutManagerProgram extends JFrame {
         } catch (InWorkoutException e) {
             System.out.println("This exercise already exists...");
         }
-
     }
 
     //EFFECTS: returns the int for the reps and sets attribute given in a string
     private int collectIntSetsReps(String attribute) {
         return Integer.parseInt(JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-            "How many " + attribute + " are you going to do for this exercise?", null));
+            "How many " + attribute + " are you going to do for this exercise?", "Sets",
+            JOptionPane.PLAIN_MESSAGE, WATER, null, "").toString());
     }
 
     //EFFECTS: returns the int for the weight attribute given
     private int collectIntWeight(String attribute) {
         return Integer.parseInt(JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-            "What is the " + attribute + " of this exercise?", null));
+            "What is the " + attribute + " of this exercise?", "Weight",
+            JOptionPane.PLAIN_MESSAGE, WATER, null, "").toString());
     }
 
 
@@ -314,7 +438,7 @@ public class WorkoutManagerProgram extends JFrame {
     //MODIFIES: this
     //EFFECTS: updates the current clothing list to display any changes made
     private void updateExerciseList() {
-        whatToRemove();
+        removeElements();
         createExerciseList(myWorkout.getAllExercises());
     }
 
@@ -355,7 +479,8 @@ public class WorkoutManagerProgram extends JFrame {
             writer = new Writer(WORKOUT_FILE);
             writer.write(myWorkout);
             writer.close();
-            informationMessage("Workout saved to file " + WORKOUT_FILE, "File Saved");
+            informationMessage("Successfully saved file... " + "\nFile name: "
+                    +  WORKOUT_FILE, "File Saved");
         } catch (IOException e) {
             errorMessage("Unable to save wardrobe to " + WORKOUT_FILE);
         }
@@ -375,11 +500,13 @@ public class WorkoutManagerProgram extends JFrame {
         }
     }
 
+    //EFFECTS: message layout that displays information for multiple scenarios using showMessageDialog
     private void informationMessage(String message, String title) {
         JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, title,
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    //EFFECTS: message layout that displays error message for multiple scenarios using showMessageDialog
     private void errorMessage(String message) {
         JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, "Error",
                 JOptionPane.ERROR_MESSAGE);
