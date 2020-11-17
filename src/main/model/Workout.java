@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.InWorkoutException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
@@ -33,7 +34,6 @@ public class Workout implements Writable {
     public void storeExercise(Exercise ex) {
         ExerciseType muscle;
         muscle = ex.getType();
-
         switch (muscle) {
             case ARMS:
                 this.armExercises.add(ex);
@@ -49,6 +49,34 @@ public class Workout implements Writable {
                 break;
             default:
                 this.shoulderExercises.add(ex);
+        }
+    }
+
+    // REQUIRES: ex != null
+    // MODIFIES: this
+    // EFFECTS: stores the given Exercise (ex) into the appropriate container within this class
+    public void addExerciseFromButton(Exercise ex) throws InWorkoutException {
+        ExerciseType muscle;
+        muscle = ex.getType();
+        if (!getAllExercises().contains(ex)) {
+            switch (muscle) {
+                case ARMS:
+                    this.armExercises.add(ex);
+                    break;
+                case CHEST:
+                    this.chestExercises.add(ex);
+                    break;
+                case BACK:
+                    this.backExercises.add(ex);
+                    break;
+                case LEGS:
+                    this.legExercises.add(ex);
+                    break;
+                default:
+                    this.shoulderExercises.add(ex);
+            }
+        } else {
+            throw new InWorkoutException();
         }
     }
 
@@ -150,7 +178,6 @@ public class Workout implements Writable {
         exerciseList.add(this.getOneLegExercise());
 
         return exerciseList;
-
     }
 
     //REQUIRES: At least 4 exercises in the Shoulders Exercise array, and at least 2 exercises in the Arm Exercise Array
@@ -178,6 +205,48 @@ public class Workout implements Writable {
         exerciseList.add(this.getOneBackExercise());
 
         return exerciseList;
+    }
+
+    //EFFECTS: produces the exercise with given name in all workouts, or null if not found
+    public Exercise findExercise(String name) {
+        name = name.toUpperCase();
+        Exercise found = null;
+        for (Exercise e : allExercises) {
+            String upperName =  e.getName().toUpperCase();
+            if (upperName.equals(name)) {
+                found = e;
+            }
+        }
+        return found;
+    }
+
+    //MODIFIES: this
+    //EFFECTS: removes exercise if it is in the current workout, returning true
+    // otherwise returns false
+    public boolean removeExercise(String name) {
+        Exercise exercise = findExercise(name);
+        if (allExercises.contains(exercise)) {
+            switch (exercise.getType()) {
+                case SHOULDERS:
+                    shoulderExercises.remove(exercise);
+                    break;
+                case LEGS:
+                    legExercises.remove(exercise);
+                    break;
+                case BACK:
+                    backExercises.remove(exercise);
+                    break;
+                case ARMS:
+                    armExercises.remove(exercise);
+                    break;
+                case CHEST:
+                    chestExercises.remove(exercise);
+                    break;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

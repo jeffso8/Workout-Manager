@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Writer {
@@ -27,7 +28,7 @@ public class Writer {
 
     // MODIFIES: this
     // EFFECTS: writes JSON representation of Workout to file
-    public void write(Workout w) {
+    public void write(Workout w) throws IOException {
 
         JSONObject json = w.toJson();
         saveToFile(json.toString(TAB));
