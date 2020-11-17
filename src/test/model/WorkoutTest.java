@@ -1,6 +1,5 @@
 package model;
 
-import exceptions.WorkoutsMissingException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;

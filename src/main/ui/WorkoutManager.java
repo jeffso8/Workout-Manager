@@ -73,7 +73,13 @@ public class WorkoutManager {
         String name = scanner.nextLine().toUpperCase();
         System.out.println("Please enter exercise type (CHEST, ARMS, LEGS, SHOULDERS, BACK)");
         ExerciseType e1 = ExerciseType.valueOf(scanner.nextLine().toUpperCase());
-        workout.storeExercise(new Exercise(name, e1));
+        System.out.println("Please enter the weight for this exercise");
+        Integer weight = Integer.parseInt(scanner.nextLine());
+        System.out.println("Please enter the number of sets for this exercise");
+        Integer sets = Integer.parseInt(scanner.nextLine());
+        System.out.println("Please enter the number of reps for this exercise");
+        Integer reps = Integer.parseInt(scanner.nextLine());
+        workout.storeExercise(new Exercise(name, e1, weight, sets, reps));
 
     }
 

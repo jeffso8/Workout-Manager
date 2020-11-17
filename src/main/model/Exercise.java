@@ -14,12 +14,12 @@ public class Exercise implements Writable {
 
     //MODIFIES: this
     //EFFECTS: creates an Exercise object with the name of the exercise and type(ENUM)
-    public Exercise(String name, ExerciseType type) {
+    public Exercise(String name, ExerciseType type, Integer weight, Integer sets, Integer reps) {
         this.name = name;
-        this.weight = 0;
+        this.weight = weight;
         this.type = type;
-        this.sets = 3;
-        this.reps = 5;
+        this.sets = sets;
+        this.reps = reps;
     }
 
     //getters
@@ -79,6 +79,9 @@ public class Exercise implements Writable {
         JSONObject json = new JSONObject();
         json.put("name", name);
         json.put("type", type);
+        json.put("weight", weight);
+        json.put("sets", sets);
+        json.put("reps", reps);
         return json;
     }
 }
