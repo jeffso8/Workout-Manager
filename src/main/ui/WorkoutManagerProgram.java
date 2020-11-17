@@ -125,12 +125,13 @@ public class WorkoutManagerProgram extends JFrame {
     //MODIFIES: this
     //EFFECTS: adds a button to bottom panel that opens the selected exercise item
     private void addButtonViewExercise() {
+        //add a displayexercise model
         openButton = new JButton(new AbstractAction("Open Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = exerciseStringList.getSelectedIndex();
                 Exercise selectedItem = exerciseList.get(index);
-                displayItem(selectedItem);
+
             }
         });
         openButton.setFont(new Font("System", Font.PLAIN, 20));
@@ -150,21 +151,18 @@ public class WorkoutManagerProgram extends JFrame {
         JMenuItem editExercise = new JMenuItem(new AbstractAction("Edit Exercises") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                doEdit();
             }
         });
         exercises.add(editExercise);
         JMenuItem removeExercise = new JMenuItem(new AbstractAction("Remove Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                doRemove();
             }
         });
         exercises.add(removeExercise);
         JMenuItem findExercises = new JMenuItem(new AbstractAction("Find Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                doFind();
             }
         });
         exercises.add(findExercises);
@@ -311,88 +309,6 @@ public class WorkoutManagerProgram extends JFrame {
     private String collectName(String type) {
         return JOptionPane.showInputDialog(WorkoutManagerProgram.this,
             "What is the name of this " + type + " exercise ?", null).toUpperCase();
-    }
-
-    //MODIFIES: this
-    //EFFECTS: does the edit on the exercise if found
-    private void doEdit() {
-        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-                "What is the name of the exercise you want to edit?", null);
-        name = name.toUpperCase();
-        if (null != myWorkout.findExercise(name)) {
-            Exercise exercise = myWorkout.findExercise(name);
-            editMenu(exercise);
-        } else {
-            errorMessage("Exercise of name " + name + " was not found.");
-        }
-    }
-
-    //MODIFIES: this
-    //EFFECTS: removes the clothing item selected
-    private void doRemove() {
-        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-                "What is the name of the Exercise you want to remove?", null);
-        name = name.toUpperCase();
-        if (myWorkout.removeExercise(name)) {
-            informationMessage(name + " was successfully removed from your workouts.", "Removed");
-        } else {
-            errorMessage("There was no exercise of name " + name + " in your workouts");
-        }
-        updateExerciseList();
-    }
-
-    //EFFECTS: finds and opens exercise if it exists
-    private void doFind() {
-        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-                "What is the name of the exercise you want to find?", null);
-        name = name.toUpperCase();
-        if (null != myWorkout.findExercise(name)) {
-            Exercise exercise = myWorkout.findExercise(name);
-            displayItem(exercise);
-        } else {
-            errorMessage("Exercise of name " + name + " was not found.");
-        }
-    }
-
-    //EFFECTS: Displays an exercise in a pop up with details and a picture
-    private void displayItem(Exercise exercise) {
-//        ImageIcon icon = getTypeImage(exercise);
-        //update icon later in JOptionPane.showMessageDialog(WorkoutManagerProgram.this, exerciseDetails(exercise),
-        //                exercise.getName(),JOptionPane.INFORMATION_MESSAGE, icon);
-        JOptionPane.showMessageDialog(WorkoutManagerProgram.this, displayExerciseInfo(exercise),
-                exercise.getName(),JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    //https://www.roseindia.net/tutorial/java/swing/comboinjoptionpane.html
-    //MODIFIES: this
-    //EFFECTS: completes the editing and selects field & new name for field
-    private void editMenu(Exercise exercise) {
-        String [] editOptions = new String[] {"Name", "Weight","Type","Sets","Reps"};
-        String whatToEdit = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-                "This Exercise currently has the following statistics and details:\n" + displayExerciseInfo(exercise)
-                + "\n\nPlease select what field you would like to edit.", "Details & Stats",
-                JOptionPane.INFORMATION_MESSAGE, null, editOptions,"Name");
-        String newDetailOrStat = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
-                "What do you want to change the " + whatToEdit + " to?", null);
-        if (whatToEdit.equals("Name")) {
-            exercise.setName(newDetailOrStat);
-        } else if (whatToEdit.equals("Weight")) {
-            exercise.setWeight(Integer.parseInt(newDetailOrStat));
-        } else if (whatToEdit.equals("Type")) {
-            exercise.setType(ExerciseType.valueOf(newDetailOrStat.toUpperCase()));
-        } else if (whatToEdit.equals("Sets")) {
-            exercise.setSets(Integer.parseInt(newDetailOrStat));
-        } else if (whatToEdit.equals("Reps")) {
-            exercise.setReps(Integer.parseInt(newDetailOrStat));
-        }
-        informationMessage(whatToEdit + " was changed to " + newDetailOrStat, "Item Edited");
-        updateExerciseList();
-    }
-
-    //EFFECTS: prints out the information of the selected exercise
-    private String displayExerciseInfo(Exercise exercise) {
-        return "Name: " + exercise.getName() + "\nWeight: " + exercise.getWeight() + "\nType: " + exercise.getType()
-            + "\nSets: " + exercise.getSets() + "\nReps: " + exercise.getReps();
     }
 
     //MODIFIES: this
