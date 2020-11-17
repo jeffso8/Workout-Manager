@@ -1,0 +1,919 @@
+Index: data/workout.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\"all-exercises\": [\n    {\n        \"name\": \"BICEP CURLS\",\n        \"type\": \"ARMS\"\n    },\n    {\n        \"name\": \"BENCH PRESS\",\n        \"type\": \"CHEST\"\n    },\n    {\n        \"name\": \"CABLE ROWS\",\n        \"type\": \"BACK\"\n    },\n    {\n        \"name\": \"DEADLIFTS\",\n        \"type\": \"BACK\"\n    }\n]}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- data/workout.json	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ data/workout.json	(date 1605645039974)
+@@ -1,18 +1,142 @@
+ {"all-exercises": [
+     {
++        "reps": 4,
++        "sets": 10,
+         "name": "BICEP CURLS",
++        "weight": 35,
++        "type": "ARMS"
++    },
++    {
++        "reps": 3,
++        "sets": 15,
++        "name": "TRICEP CABLE PULLS",
++        "weight": 20,
++        "type": "ARMS"
++    },
++    {
++        "reps": 4,
++        "sets": 5,
++        "name": "BARBELL CURLS",
++        "weight": 50,
++        "type": "ARMS"
++    },
++    {
++        "reps": 4,
++        "sets": 8,
++        "name": "HAMMER CURLS",
++        "weight": 30,
+         "type": "ARMS"
+     },
+     {
++        "reps": 5,
++        "sets": 5,
+         "name": "BENCH PRESS",
++        "weight": 185,
++        "type": "CHEST"
++    },
++    {
++        "reps": 6,
++        "sets": 15,
++        "name": "PUSHUPS",
++        "weight": 0,
++        "type": "CHEST"
++    },
++    {
++        "reps": 5,
++        "sets": 5,
++        "name": "INCLINE DUMBBELL PRESS",
++        "weight": 60,
++        "type": "CHEST"
++    },
++    {
++        "reps": 4,
++        "sets": 10,
++        "name": "FLIES",
++        "weight": 35,
+         "type": "CHEST"
+     },
+     {
++        "reps": 4,
++        "sets": 8,
+         "name": "CABLE ROWS",
++        "weight": 70,
+         "type": "BACK"
+     },
+     {
++        "reps": 5,
++        "sets": 3,
+         "name": "DEADLIFTS",
++        "weight": 235,
++        "type": "BACK"
++    },
++    {
++        "reps": 6,
++        "sets": 6,
++        "name": "PULLUPS",
++        "weight": 15,
+         "type": "BACK"
++    },
++    {
++        "reps": 5,
++        "sets": 3,
++        "name": "UPRIGHT ROWS",
++        "weight": 85,
++        "type": "BACK"
++    },
++    {
++        "reps": 5,
++        "sets": 5,
++        "name": "BACK SQUAT",
++        "weight": 225,
++        "type": "LEGS"
++    },
++    {
++        "reps": 5,
++        "sets": 5,
++        "name": "FRONT SQUAT",
++        "weight": 225,
++        "type": "LEGS"
++    },
++    {
++        "reps": 5,
++        "sets": 4,
++        "name": "LEG PRESS",
++        "weight": 145,
++        "type": "LEGS"
++    },
++    {
++        "reps": 3,
++        "sets": 8,
++        "name": "HAMSTRING CURLS",
++        "weight": 70,
++        "type": "LEGS"
++    },
++    {
++        "reps": 4,
++        "sets": 10,
++        "name": "LEG EXTENSIONS",
++        "weight": 80,
++        "type": "LEGS"
++    },
++    {
++        "reps": 4,
++        "sets": 8,
++        "name": "STANDING OVERHEAD PRESS",
++        "weight": 115,
++        "type": "SHOULDERS"
++    },
++    {
++        "reps": 4,
++        "sets": 6,
++        "name": "SEATED OVERHEAD PRESS",
++        "weight": 60,
++        "type": "SHOULDERS"
++    },
++    {
++        "reps": 3,
++        "sets": 12,
++        "name": "LAT RAISES",
++        "weight": 15,
++        "type": "SHOULDERS"
+     }
+ ]}
+\ No newline at end of file
+Index: src/main/ui/WorkoutManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\nimport model.Exercise;\nimport model.ExerciseType;\nimport model.Workout;\nimport persistence.Reader;\nimport persistence.Writer;\n\nimport java.io.IOException;\nimport java.util.List;\nimport java.util.Scanner;\n\n// Workout Manager Application\npublic class WorkoutManager {\n    private static final String JSON_STORE = \"./data/workout.json\";\n\n    Workout workout;\n    Scanner scanner = new Scanner(System.in);\n    private Writer jsonWriter;\n    private Reader jsonReader;\n\n    // EFFECTS: runs the Workout Manager Application\n    public WorkoutManager() {\n        workout = new Workout();\n        jsonWriter = new Writer(JSON_STORE);\n        jsonReader = new Reader(JSON_STORE);\n        run();\n    }\n\n    //MODIFIES: this\n    //EFFECTS: processes user input\n    void run() {\n        System.out.println(\"Welcome to your Workout Manager\");\n        String response;\n        do {\n            showMenu(\"Please Select an Option\", \"1. View Workout Today\", \"2. Update Exercise\",\n                    \"3. Add Exercise\", \"4. View All Exercises\", \"5. Save Workout to File\",\n                    \"6. Load Workout from File\",\"7. Exit\");\n            response = scanner.nextLine();\n            if (response.equals(\"1\")) {\n                viewWorkoutToday();\n            } else if (response.equals(\"2\")) {\n                updateExercise();\n            } else if (response.equals(\"3\")) {\n                addExercise();\n            } else if (response.equals(\"4\")) {\n                viewExercises();\n            } else if (response.equals(\"5\")) {\n                saveWorkout();\n            } else if (response.equals(\"6\")) {\n                loadWorkout();\n            }\n        } while (!response.equals(\"7\"));\n    }\n\n    //EFFECTS: allows inputted strings to be printed as a menu\n    private void showMenu(String s2, String s3, String s4, String s5, String s6, String s7, String s8, String s9) {\n        System.out.println(s2);\n        System.out.println(s3);\n        System.out.println(s4);\n        System.out.println(s5);\n        System.out.println(s6);\n        System.out.println(s7);\n        System.out.println(s8);\n        System.out.println(s9);\n\n    }\n\n    //MODIFIES: this, Exercise, Workout\n    //EFFECTS: adds an exercise to the Workout class\n    private void addExercise() {\n        System.out.println(\"Please enter exercise name\");\n        String name = scanner.nextLine().toUpperCase();\n        System.out.println(\"Please enter exercise type (CHEST, ARMS, LEGS, SHOULDERS, BACK)\");\n        ExerciseType e1 = ExerciseType.valueOf(scanner.nextLine().toUpperCase());\n        workout.storeExercise(new Exercise(name, e1));\n    }\n\n    //MODIFIES: this\n    //EFFECTS: prints exercises in a list of exercises\n    private void printWorkoutStats(List<Exercise> ex) {\n        for (Exercise e : ex) {\n            System.out.println(\"(\" + e.getName() + ',' + e.getWeight() + ','\n                    + e.getSets() + 'x' + e.getReps() + \")\");\n        }\n    }\n\n    //MODIFIES: this\n    //EFFECTS: prints the exercises for the given day\n    private void viewWorkoutToday() {\n        System.out.println(\"Please enter the current day (MONDAY, TUESDAY, WEDNESDAY, ETC.)\");\n        String day = scanner.nextLine().toUpperCase();\n        switch (day) {\n            case \"MONDAY\":\n                printWorkoutStats(workout.mondayWorkout());\n                break;\n            case \"TUESDAY\":\n                printWorkoutStats(workout.tuesdayWorkout());\n                break;\n            case \"WEDNESDAY\":\n                printWorkoutStats(workout.wednesdayWorkout());\n                break;\n            case \"THURSDAY\":\n                printWorkoutStats(workout.thursdayWorkout());\n                break;\n            default: System.out.println(\"Today is your rest day!\");\n        }\n    }\n\n    //MODIFIES: this\n    //EFFECTS: updates the statistics of an exercise\n    private void updateExercise() {\n        System.out.println(\"Please enter the name of the exercise you want to update\");\n        String name = scanner.nextLine().toUpperCase();\n        for (Exercise e : workout.getAllExercises()) {\n            if (name.equals(e.getName().toUpperCase())) {\n                System.out.println(\"Please enter the weight you lifted\");\n                int weight = scanner.nextInt();\n                System.out.println(\"Please enter the sets you did\");\n                int sets = scanner.nextInt();\n                System.out.println(\"Please enter the reps you did\");\n                int reps = scanner.nextInt();\n                e.setWeight(weight);\n                e.setSets(sets);\n                e.setReps(reps);\n            }\n        }\n    }\n\n    //EFFECTS: displays all exercises logged in the Workout\n    private void viewExercises() {\n        for (Exercise e : workout.getAllExercises()) {\n            System.out.println(\"(\" + e.getName() + \", \" + e.getType());\n            System.out.println(\"Weight: \" + e.getWeight() + \" lbs\" + \" )\");\n        }\n    }\n\n    //References JsonSerializationDemo\n    // EFFECTS: saves the workroom to file\n    private void saveWorkout() {\n        try {\n            jsonWriter.open();\n            jsonWriter.write(workout);\n            jsonWriter.close();\n            System.out.println(\"Saved workout to \" + JSON_STORE);\n        } catch (IOException e) {\n            System.out.println(\"Unable to write to file: \" + JSON_STORE);\n        }\n    }\n\n    //References JsonSerializationDemo\n    // MODIFIES: this\n    // EFFECTS: loads workout from file\n    private void loadWorkout() {\n        try {\n            workout = jsonReader.read();\n            System.out.println(\"Loaded workout from \" + JSON_STORE);\n        } catch (IOException e) {\n            System.out.println(\"Unable to read from file: \" + JSON_STORE);\n        }\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/ui/WorkoutManager.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/main/ui/WorkoutManager.java	(date 1605644834596)
+@@ -73,7 +73,13 @@
+         String name = scanner.nextLine().toUpperCase();
+         System.out.println("Please enter exercise type (CHEST, ARMS, LEGS, SHOULDERS, BACK)");
+         ExerciseType e1 = ExerciseType.valueOf(scanner.nextLine().toUpperCase());
+-        workout.storeExercise(new Exercise(name, e1));
++        System.out.println("Please enter the weight for this exercise");
++        Integer weight = Integer.parseInt(scanner.nextLine());
++        System.out.println("Please enter the number of sets for this exercise");
++        Integer sets = Integer.parseInt(scanner.nextLine());
++        System.out.println("Please enter the number of reps for this exercise");
++        Integer reps = Integer.parseInt(scanner.nextLine());
++        workout.storeExercise(new Exercise(name, e1, weight, sets, reps));
+     }
+ 
+     //MODIFIES: this
+Index: src/test/persistence/WriterTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package persistence;\n\nimport model.Exercise;\nimport model.ExerciseType;\nimport model.Workout;\nimport org.junit.jupiter.api.Test;\n\nimport java.io.IOException;\nimport java.util.List;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.fail;\n\npublic class WriterTest extends JSONTest {\n\n    @Test\n    void testWriterInvalidFile() {\n        try {\n            Workout w = new Workout();\n            Writer writer = new Writer(\"./data/\\0invalid:fileName.json\");\n            writer.open();\n            fail(\"IOException was expected but not thrown\");\n        } catch (IOException e) {\n            //expected\n        }\n    }\n\n    @Test\n    void testWriterEmptyWorkout() {\n        try {\n            Workout w = new Workout();\n            Writer writer = new Writer(\"./data/testWriterEmptyWorkout.json\");\n            writer.open();\n            writer.write(w);\n            writer.close();\n\n            Reader reader = new Reader(\"./data/testWriterEmptyWorkout.json\");\n            w = reader.read();\n            assertEquals(0, w.getAllExercises().size());\n        } catch (IOException e) {\n            fail(\"IOException should not have been thrown\");\n        }\n    }\n\n    @Test\n    void testWriterGeneralWorkout() {\n        try {\n            Workout w = new Workout();\n            w.storeExercise(new Exercise(\"Bicep Curls\", ExerciseType.ARMS));\n            w.storeExercise(new Exercise(\"Bench Press\", ExerciseType.CHEST));\n            Writer writer = new Writer(\"./data/testWriterGeneralWorkout.json\");\n            writer.open();\n            writer.write(w);\n            writer.close();\n\n            Reader reader = new Reader(\"./data/testWriterGeneralWorkout.json\");\n            w = reader.read();\n            List<Exercise> exercises = w.getAllExercises();\n            assertEquals(2, exercises.size());\n            checkExercise(\"Bicep Curls\", ExerciseType.ARMS, exercises.get(0));\n            checkExercise(\"Bench Press\", ExerciseType.CHEST, exercises.get(1));\n        } catch (IOException e) {\n            fail(\"Exception should not have been thrown\");\n        }\n    }\n\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/persistence/WriterTest.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/test/persistence/WriterTest.java	(date 1605644701250)
+@@ -46,8 +46,8 @@
+     void testWriterGeneralWorkout() {
+         try {
+             Workout w = new Workout();
+-            w.storeExercise(new Exercise("Bicep Curls", ExerciseType.ARMS));
+-            w.storeExercise(new Exercise("Bench Press", ExerciseType.CHEST));
++            w.storeExercise(new Exercise("Bicep Curls", ExerciseType.ARMS, 30, 4, 12));
++            w.storeExercise(new Exercise("Bench Press", ExerciseType.CHEST, 225, 5,5));
+             Writer writer = new Writer("./data/testWriterGeneralWorkout.json");
+             writer.open();
+             writer.write(w);
+Index: src/test/model/WorkoutTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\n\nimport exceptions.WorkoutsMissingException;\nimport org.json.JSONArray;\nimport org.json.JSONObject;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\n\nimport static model.ExerciseType.*;\nimport static org.junit.jupiter.api.Assertions.*;\n\n\npublic class WorkoutTest {\n    private Workout testWorkout;\n\n    @BeforeEach\n    public void runBefore() {\n        testWorkout = new Workout();\n    }\n\n    @Test\n    public void testConstructor(){\n        assertTrue(testWorkout.getChestExercises().isEmpty());\n        assertTrue(testWorkout.getArmExercises().isEmpty());\n        assertTrue(testWorkout.getBackExercises().isEmpty());\n        assertTrue(testWorkout.getLegExercises().isEmpty());\n        assertTrue(testWorkout.getShoulderExercises().isEmpty());\n\n    }\n\n    @Test\n    public void storeExerciseTest(){\n        Exercise ex = new Exercise(\"Barbell Bench Press\", CHEST);\n        Exercise ex1 = new Exercise(\"Shoulder Press\", SHOULDERS);\n        Exercise ex2 = new Exercise(\"Back Squat\", LEGS);\n        Exercise ex3 = new Exercise(\"Bicep Curls\", ARMS);\n        Exercise ex4 = new Exercise(\"Deadlifts\", BACK);\n\n        assertTrue(testWorkout.getChestExercises().isEmpty());\n        testWorkout.storeExercise(ex);\n        assertFalse(testWorkout.getChestExercises().isEmpty());\n\n        assertTrue(testWorkout.getShoulderExercises().isEmpty());\n        testWorkout.storeExercise(ex1);\n        assertFalse(testWorkout.getShoulderExercises().isEmpty());\n\n        assertTrue(testWorkout.getLegExercises().isEmpty());\n        testWorkout.storeExercise(ex2);\n        assertFalse(testWorkout.getLegExercises().isEmpty());\n\n        assertTrue(testWorkout.getArmExercises().isEmpty());\n        testWorkout.storeExercise(ex3);\n        assertFalse(testWorkout.getArmExercises().isEmpty());\n\n        assertTrue(testWorkout.getBackExercises().isEmpty());\n        testWorkout.storeExercise(ex4);\n        assertFalse(testWorkout.getBackExercises().isEmpty());\n\n    }\n\n    @Test\n    public void getAllExercisesTest() {\n        assertTrue(testWorkout.getAllExercises().isEmpty());\n        Exercise ex = new Exercise(\"Barbell Bench Press\", CHEST);\n        Exercise ex1 = new Exercise(\"Shoulder Press\", SHOULDERS);\n        testWorkout.storeExercise(ex);\n        testWorkout.storeExercise(ex1);\n        assertFalse(testWorkout.getAllExercises().isEmpty());\n        assertEquals(testWorkout.getAllExercises().size(), 2);\n    }\n\n    @Test\n    public void mondayWorkoutTest() {\n        //Store exercises in their correct container\n        Exercise ex = new Exercise(\"Barbell Bench Press\", CHEST);\n        testWorkout.storeExercise(ex);\n        Exercise ex1 = new Exercise(\"Cable Flies\", CHEST);\n        testWorkout.storeExercise(ex1);\n        Exercise ex2 = new Exercise(\"Incline Dumbbell Press\", CHEST);\n        testWorkout.storeExercise(ex2);\n        Exercise ex3 = new Exercise(\"Triceps Extensions\", ARMS);\n        testWorkout.storeExercise(ex3);\n        Exercise ex4 = new Exercise(\"Bicep Curls\", ARMS);\n        testWorkout.storeExercise(ex4);\n\n        //Run mondayWorkout, and a list of exercises should be returned\n        testWorkout.mondayWorkout();\n        assertFalse(testWorkout.mondayWorkout().isEmpty());\n        assertEquals(testWorkout.mondayWorkout().size(), 5);\n    }\n\n    @Test\n    public void tuesdayWorkoutTest() {\n        //Store exercises in their correct container\n        Exercise ex = new Exercise(\"Back Squats\", LEGS);\n        testWorkout.storeExercise(ex);\n        Exercise ex1 = new Exercise(\"Leg Extensions\", LEGS);\n        testWorkout.storeExercise(ex1);\n        Exercise ex2 = new Exercise(\"Hamstring Curls\", LEGS);\n        testWorkout.storeExercise(ex2);\n        Exercise ex3 = new Exercise(\"Dumbbell Lunges\", LEGS);\n        testWorkout.storeExercise(ex3);\n        Exercise ex4 = new Exercise(\"Front Squats\", LEGS);\n        testWorkout.storeExercise(ex4);\n\n        //Run tuesdayWorkout, and a list of exercises should be returned\n\n        testWorkout.tuesdayWorkout();\n        assertFalse(testWorkout.tuesdayWorkout().isEmpty());\n        assertEquals(testWorkout.tuesdayWorkout().size(), 4);\n\n    }\n\n    @Test\n    public void wednesdayWorkoutTest() {\n        //Store exercises in their correct container\n        Exercise ex = new Exercise(\"Overhead Press\", SHOULDERS);\n        testWorkout.storeExercise(ex);\n        Exercise ex1 = new Exercise(\"Seated Dumbbell Overhead Press\", SHOULDERS);\n        testWorkout.storeExercise(ex1);\n        Exercise ex2 = new Exercise(\"Lateral Raises\", SHOULDERS);\n        testWorkout.storeExercise(ex2);\n        Exercise ex3 = new Exercise(\"Face Pulls\", SHOULDERS);\n        testWorkout.storeExercise(ex3);\n        Exercise ex4 = new Exercise(\"Bicep Curls\", ARMS);\n        testWorkout.storeExercise(ex4);\n        Exercise ex5 = new Exercise(\"Bicep Curls\", ARMS);\n        testWorkout.storeExercise(ex5);\n\n        //Run wednesdayWorkout, and a list of exercises should be returned\n        testWorkout.wednesdayWorkout();\n        assertFalse(testWorkout.wednesdayWorkout().isEmpty());\n        assertEquals(testWorkout.wednesdayWorkout().size(), 5);\n    }\n\n    @Test\n    public void thursdayWorkoutTest() {\n        //Store exercises in their correct container\n        Exercise ex = new Exercise(\"Sumo Deadlift\", BACK);\n        testWorkout.storeExercise(ex);\n        Exercise ex1 = new Exercise(\"Good Morning Extensions\", BACK);\n        testWorkout.storeExercise(ex1);\n        Exercise ex2 = new Exercise(\"Seated Cable Rows\", BACK);\n        testWorkout.storeExercise(ex2);\n        Exercise ex3 = new Exercise(\"Pull-ups\", BACK);\n        testWorkout.storeExercise(ex3);\n        Exercise ex4 = new Exercise(\"Push-ups\", CHEST);\n        testWorkout.storeExercise(ex4);\n        Exercise ex5 = new Exercise(\"Bicep Curls\", ARMS);\n        testWorkout.storeExercise(ex5);\n\n        //Run thursdayWorkout, and a list of exercises should be returned\n        testWorkout.thursdayWorkout();\n        assertFalse(testWorkout.thursdayWorkout().isEmpty());\n        assertEquals(testWorkout.thursdayWorkout().size(), 5);\n    }\n\n    @Test\n    public void toJsonTest() {\n        testWorkout.storeExercise(new Exercise(\"Bench Press\", CHEST));\n        JSONObject json = testWorkout.toJson();\n        JSONArray jsonArray = json.getJSONArray(\"all-exercises\");\n        JSONObject jsonExercises = jsonArray.getJSONObject(0);\n        System.out.println(jsonExercises);\n        String exerciseName = jsonExercises.getString(\"name\");\n        Object muscleType = jsonExercises.get(\"type\");\n\n        assertEquals(exerciseName, \"Bench Press\");\n        assertEquals(muscleType, CHEST);\n    }\n\n\n\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/model/WorkoutTest.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/test/model/WorkoutTest.java	(date 1605644567078)
+@@ -1,6 +1,5 @@
+ package model;
+ 
+-import exceptions.WorkoutsMissingException;
+ import org.json.JSONArray;
+ import org.json.JSONObject;
+ import org.junit.jupiter.api.BeforeEach;
+@@ -30,11 +29,11 @@
+ 
+     @Test
+     public void storeExerciseTest(){
+-        Exercise ex = new Exercise("Barbell Bench Press", CHEST);
+-        Exercise ex1 = new Exercise("Shoulder Press", SHOULDERS);
+-        Exercise ex2 = new Exercise("Back Squat", LEGS);
+-        Exercise ex3 = new Exercise("Bicep Curls", ARMS);
+-        Exercise ex4 = new Exercise("Deadlifts", BACK);
++        Exercise ex = new Exercise("Barbell Bench Press", CHEST,50,3,5);
++        Exercise ex1 = new Exercise("Shoulder Press", SHOULDERS,50,3,5);
++        Exercise ex2 = new Exercise("Back Squat", LEGS,50,3,5);
++        Exercise ex3 = new Exercise("Bicep Curls", ARMS,50,3,5);
++        Exercise ex4 = new Exercise("Deadlifts", BACK,50,3,5);
+ 
+         assertTrue(testWorkout.getChestExercises().isEmpty());
+         testWorkout.storeExercise(ex);
+@@ -61,8 +60,8 @@
+     @Test
+     public void getAllExercisesTest() {
+         assertTrue(testWorkout.getAllExercises().isEmpty());
+-        Exercise ex = new Exercise("Barbell Bench Press", CHEST);
+-        Exercise ex1 = new Exercise("Shoulder Press", SHOULDERS);
++        Exercise ex = new Exercise("Barbell Bench Press", CHEST, 120, 4,8);
++        Exercise ex1 = new Exercise("Shoulder Press", SHOULDERS, 120, 4,8);
+         testWorkout.storeExercise(ex);
+         testWorkout.storeExercise(ex1);
+         assertFalse(testWorkout.getAllExercises().isEmpty());
+@@ -72,15 +71,15 @@
+     @Test
+     public void mondayWorkoutTest() {
+         //Store exercises in their correct container
+-        Exercise ex = new Exercise("Barbell Bench Press", CHEST);
++        Exercise ex = new Exercise("Barbell Bench Press", CHEST, 225, 5, 5);
+         testWorkout.storeExercise(ex);
+-        Exercise ex1 = new Exercise("Cable Flies", CHEST);
++        Exercise ex1 = new Exercise("Cable Flies", CHEST,25,3,4);
+         testWorkout.storeExercise(ex1);
+-        Exercise ex2 = new Exercise("Incline Dumbbell Press", CHEST);
++        Exercise ex2 = new Exercise("Incline Dumbbell Press", CHEST,100,3,4);
+         testWorkout.storeExercise(ex2);
+-        Exercise ex3 = new Exercise("Triceps Extensions", ARMS);
++        Exercise ex3 = new Exercise("Triceps Extensions", ARMS,20,4,12);
+         testWorkout.storeExercise(ex3);
+-        Exercise ex4 = new Exercise("Bicep Curls", ARMS);
++        Exercise ex4 = new Exercise("Bicep Curls", ARMS,30,5,4);
+         testWorkout.storeExercise(ex4);
+ 
+         //Run mondayWorkout, and a list of exercises should be returned
+@@ -92,15 +91,15 @@
+     @Test
+     public void tuesdayWorkoutTest() {
+         //Store exercises in their correct container
+-        Exercise ex = new Exercise("Back Squats", LEGS);
++        Exercise ex = new Exercise("Back Squats", LEGS, 225, 5,5);
+         testWorkout.storeExercise(ex);
+-        Exercise ex1 = new Exercise("Leg Extensions", LEGS);
++        Exercise ex1 = new Exercise("Leg Extensions", LEGS, 80,4,10);
+         testWorkout.storeExercise(ex1);
+-        Exercise ex2 = new Exercise("Hamstring Curls", LEGS);
++        Exercise ex2 = new Exercise("Hamstring Curls", LEGS,75,4,10);
+         testWorkout.storeExercise(ex2);
+-        Exercise ex3 = new Exercise("Dumbbell Lunges", LEGS);
++        Exercise ex3 = new Exercise("Dumbbell Lunges", LEGS,35,4,12);
+         testWorkout.storeExercise(ex3);
+-        Exercise ex4 = new Exercise("Front Squats", LEGS);
++        Exercise ex4 = new Exercise("Front Squats", LEGS, 235,5,5);
+         testWorkout.storeExercise(ex4);
+ 
+         //Run tuesdayWorkout, and a list of exercises should be returned
+@@ -114,17 +113,17 @@
+     @Test
+     public void wednesdayWorkoutTest() {
+         //Store exercises in their correct container
+-        Exercise ex = new Exercise("Overhead Press", SHOULDERS);
++        Exercise ex = new Exercise("Overhead Press", SHOULDERS, 125,4,8);
+         testWorkout.storeExercise(ex);
+-        Exercise ex1 = new Exercise("Seated Dumbbell Overhead Press", SHOULDERS);
++        Exercise ex1 = new Exercise("Seated Dumbbell Overhead Press", SHOULDERS,70,4,5);
+         testWorkout.storeExercise(ex1);
+-        Exercise ex2 = new Exercise("Lateral Raises", SHOULDERS);
++        Exercise ex2 = new Exercise("Lateral Raises", SHOULDERS,15,4,12);
+         testWorkout.storeExercise(ex2);
+-        Exercise ex3 = new Exercise("Face Pulls", SHOULDERS);
++        Exercise ex3 = new Exercise("Face Pulls", SHOULDERS,30,5,8);
+         testWorkout.storeExercise(ex3);
+-        Exercise ex4 = new Exercise("Bicep Curls", ARMS);
++        Exercise ex4 = new Exercise("Bicep Curls", ARMS,30,4,12);
+         testWorkout.storeExercise(ex4);
+-        Exercise ex5 = new Exercise("Bicep Curls", ARMS);
++        Exercise ex5 = new Exercise("Tricep Cable Pulls", ARMS, 20,4,12);
+         testWorkout.storeExercise(ex5);
+ 
+         //Run wednesdayWorkout, and a list of exercises should be returned
+@@ -136,17 +135,17 @@
+     @Test
+     public void thursdayWorkoutTest() {
+         //Store exercises in their correct container
+-        Exercise ex = new Exercise("Sumo Deadlift", BACK);
++        Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
+         testWorkout.storeExercise(ex);
+-        Exercise ex1 = new Exercise("Good Morning Extensions", BACK);
++        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+         testWorkout.storeExercise(ex1);
+-        Exercise ex2 = new Exercise("Seated Cable Rows", BACK);
++        Exercise ex2 = new Exercise("Seated Cable Rows", BACK,50,4,3);
+         testWorkout.storeExercise(ex2);
+-        Exercise ex3 = new Exercise("Pull-ups", BACK);
++        Exercise ex3 = new Exercise("Pull-ups", BACK,0,6,6);
+         testWorkout.storeExercise(ex3);
+-        Exercise ex4 = new Exercise("Push-ups", CHEST);
++        Exercise ex4 = new Exercise("Push-ups", CHEST,0,6,15);
+         testWorkout.storeExercise(ex4);
+-        Exercise ex5 = new Exercise("Bicep Curls", ARMS);
++        Exercise ex5 = new Exercise("Bicep Curls", ARMS,30,4,12);
+         testWorkout.storeExercise(ex5);
+ 
+         //Run thursdayWorkout, and a list of exercises should be returned
+@@ -157,7 +156,7 @@
+ 
+     @Test
+     public void toJsonTest() {
+-        testWorkout.storeExercise(new Exercise("Bench Press", CHEST));
++        testWorkout.storeExercise(new Exercise("Bench Press", CHEST, 225, 5,5));
+         JSONObject json = testWorkout.toJson();
+         JSONArray jsonArray = json.getJSONArray("all-exercises");
+         JSONObject jsonExercises = jsonArray.getJSONObject(0);
+Index: src/main/ui/WorkoutManagerProgram.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\nimport exceptions.InWorkoutException;\nimport model.Exercise;\nimport model.ExerciseType;\nimport model.Workout;\nimport persistence.Reader;\nimport persistence.Writer;\n\nimport javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.ActionEvent;\nimport java.io.IOException;\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class WorkoutManagerProgram extends JFrame {\n    public static final int WIDTH = 600;\n    public static final int HEIGHT = 400;\n    private JMenu exercises;\n    private JMenu workouts;\n    private JMenu file;\n    private static final String WORKOUT_FILE = \"./data/workout.json\";\n    private Workout myWorkout;\n    private List<Exercise> exerciseList;\n    private JScrollPane scroller;\n    private JList<String> exerciseStringList;\n    private JList<String> workoutStringList;\n    private boolean isExercisesDisplayed;\n    private JPanel buttonPane;\n    private JButton openButton;\n\n\n\n    public WorkoutManagerProgram() {\n        super(\"Workout Manager\");\n        isExercisesDisplayed = false;\n        initializeGraphics();\n    }\n\n    // MODIFIES: this\n    // EFFECTS:  draws the JFrame window where this WorkoutManager will operate, and populates the tools to be used\n    //           to manipulate this GUI\n    private void initializeGraphics() {\n        setLayout(new BorderLayout());\n        setMinimumSize(new Dimension(WIDTH, HEIGHT));\n        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\n        setLocationRelativeTo(null);\n        setVisible(true);\n        createMenus();\n        initializeData();\n        createExerciseList(myWorkout.getAllExercises());\n        JLabel label = new JLabel(\"Label\");\n        JScrollPane scrollPane = new JScrollPane(label);\n        this.add(scrollPane, BorderLayout.EAST);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: creates the workout and loads the existing one from file if there exists one\n    private void initializeData() {\n        myWorkout = new Workout();\n        loadWorkout();\n    }\n\n    //https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html\n    //MODIFIES: this\n    //EFFECTS: create a menu bar with items\n    public void createMenus() {\n        JMenuBar menuBar = new JMenuBar();\n        exercises = new JMenu(\"Exercises\");\n        workouts = new JMenu(\"Workouts\");\n        file = new JMenu(\"File\");\n        setJMenuBar(menuBar);\n        menuBar.add(exercises);\n        menuBar.add(workouts);\n        menuBar.add(file);\n        fileMenu();\n        JMenu addExercise = new JMenu(\"Add Exercise\");\n        JMenu viewWorkouts = new JMenu(\"View Workouts\");\n        exerciseMenu(addExercise);\n        workoutMenu(viewWorkouts);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: creates the current exercise list and adds to main frame\n    public void createExerciseList(List<Exercise> addToMainFrame) {\n        DefaultListModel<String> listModel = new DefaultListModel<>();\n        exerciseList = new ArrayList<>();\n        for (Exercise e : addToMainFrame) {\n            listModel.addElement(e.getType() + \" - Name: \" + e.getName() + \", Weight: \" + e.getWeight()\n                    + \" , Sets x Reps: \" + e.getSets() + \"x\" + e.getReps());\n            exerciseList.add(e);\n        }\n        configureList(listModel);\n    }\n\n    //EFFECTS: configures the list in the pane\n    private void configureList(ListModel listModel) {\n        scroller = new JScrollPane();\n        exerciseStringList = new JList<>(listModel);\n        exerciseStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);\n        exerciseStringList.setFont(new Font(\"System\", Font.PLAIN, 24));\n        scroller.setViewportView(exerciseStringList);\n        exerciseStringList.setLayoutOrientation(JList.VERTICAL);\n        add(scroller);\n        addButtonViewExercise();\n        setVisible(true);\n    }\n\n    //EFFECTS: configures the list in the pane\n    private void configureWorkoutList(ListModel listModel) {\n        scroller = new JScrollPane();\n        exerciseStringList = new JList<>(listModel);\n        exerciseStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);\n        exerciseStringList.setFont(new Font(\"System\", Font.PLAIN, 24));\n        scroller.setViewportView(exerciseStringList);\n        exerciseStringList.setLayoutOrientation(JList.VERTICAL);\n        add(scroller);\n        addButtonViewExercise();\n        setVisible(true);\n    }\n\n    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java\n    //https://stackoverflow.com/questions/5911565/how-to-add-multiple-actionlisteners-for-multiple-buttons-in-java-swing/5911621 <- for all button actions\n    //MODIFIES: this\n    //EFFECTS: adds a button to bottom panel that opens the selected exercise item\n    private void addButtonViewExercise() {\n        openButton = new JButton(new AbstractAction(\"Open Exercise\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                int index = exerciseStringList.getSelectedIndex();\n                Exercise selectedItem = exerciseList.get(index);\n                displayItem(selectedItem);\n            }\n        });\n        openButton.setFont(new Font(\"System\", Font.PLAIN, 20));\n        buttonPane = new JPanel();\n        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));\n        buttonPane.add(openButton);\n        add(buttonPane, BorderLayout.PAGE_END);\n        openButton.setVisible(true);\n        buttonPane.setVisible(true);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: adds sub menu items to exercises menu tab\n    private void exerciseMenu(JMenu addExercise) {\n        exercises.add(addExercise);\n        addExerciseSubmenu(addExercise);\n        JMenuItem editExercise = new JMenuItem(new AbstractAction(\"Edit Exercises\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                doEdit();\n            }\n        });\n        exercises.add(editExercise);\n        JMenuItem removeExercise = new JMenuItem(new AbstractAction(\"Remove Exercise\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                doRemove();\n            }\n        });\n        exercises.add(removeExercise);\n        JMenuItem findExercises = new JMenuItem(new AbstractAction(\"Find Exercise\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                doFind();\n            }\n        });\n        exercises.add(findExercises);\n    }\n\n\n    //MODIFIES: this\n    //EFFECTS: adds items to addClothing submenu\n    private void addExerciseSubmenu(JMenu addExercise) {\n        JMenuItem addArmExercise = new JMenuItem(new AbstractAction(\"Arms\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                addInputExercise(ExerciseType.ARMS);\n            }\n        });\n        addExercise.add(addArmExercise);\n        JMenuItem addChestExercise = new JMenuItem(new AbstractAction(\"Chest\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                addInputExercise(ExerciseType.CHEST);\n            }\n        });\n        addExercise.add(addChestExercise);\n        JMenuItem addLegExercise = new JMenuItem(new AbstractAction(\"Legs\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                addInputExercise(ExerciseType.LEGS);\n            }\n        });\n        addExercise.add(addLegExercise);\n        addExerciseSubmenuContinued(addExercise);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: adds items to addClothing submenu\n    private void addExerciseSubmenuContinued(JMenu addExercise) {\n        JMenuItem addShoulderExercise = new JMenuItem(new AbstractAction(\"Shoulders\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                addInputExercise(ExerciseType.SHOULDERS);\n            }\n        });\n        addExercise.add(addShoulderExercise);\n        JMenuItem addBackExercise = new JMenuItem(new AbstractAction(\"Back\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                addInputExercise(ExerciseType.BACK);\n            }\n        });\n        addExercise.add(addBackExercise);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: adds a dropdown menu to workouts\n    private void workoutMenu(JMenu viewWorkouts) {\n        JMenuItem mondayWorkout = new JMenuItem(new AbstractAction(\"Monday\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                workoutDay(\"Monday\");\n            }\n        });\n        workouts.add(mondayWorkout);\n        JMenuItem tuesdayWorkout = new JMenuItem(new AbstractAction(\"Tuesday\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                workoutDay(\"Tuesday\");\n            }\n        });\n        workouts.add(tuesdayWorkout);\n        workoutMenuContinued(viewWorkouts);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: adds dropdown menu to workouts\n    private void workoutMenuContinued(JMenu viewWorkouts) {\n        JMenuItem wednesdayWorkout = new JMenuItem(new AbstractAction(\"Wednesday\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                workoutDay(\"Wednesday\");\n            }\n        });\n        workouts.add(wednesdayWorkout);\n        JMenuItem thursdayWorkout = new JMenuItem(new AbstractAction(\"Thursday\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                workoutDay(\"Thursday\");\n            }\n        });\n        workouts.add(thursdayWorkout);\n    }\n\n    private void workoutDay(String weekday) {\n        switch (weekday) {\n            case \"Monday\":\n                createExerciseList(myWorkout.mondayWorkout());\n                break;\n            case \"Tuesday\":\n                createExerciseList(myWorkout.tuesdayWorkout());\n                break;\n            case \"Wednesday\":\n                createExerciseList(myWorkout.wednesdayWorkout());\n                break;\n            case \"Thursday\":\n                createExerciseList(myWorkout.thursdayWorkout());\n                break;\n        }\n    }\n\n    //EFFECTS: adds the inputted exercise to the list of exercises\n    private void addInputExercise(ExerciseType type) {\n        String name = collectName(type.toString());\n        Integer weight = collectIntWeight(\"weight\");\n        Integer sets = collectIntSetsReps(\"sets\");\n        Integer reps = collectIntSetsReps(\"reps\");\n\n        Exercise addedExercise = new Exercise(name, type);\n        addedExercise.setWeight(weight);\n        addedExercise.setSets(sets);\n        addedExercise.setReps(reps);\n\n        try {\n            myWorkout.addExerciseFromButton(addedExercise);\n            updateExerciseList();\n        } catch (InWorkoutException e) {\n            System.out.println(\"This exercise already exists...\");\n        }\n\n    }\n\n    //EFFECTS: returns the int for the reps and sets attribute given in a string\n    private int collectIntSetsReps(String attribute) {\n        return Integer.parseInt(JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n            \"How many \" + attribute + \" are you going to do for this exercise?\", null));\n    }\n\n    //EFFECTS: returns the int for the weight attribute given\n    private int collectIntWeight(String attribute) {\n        return Integer.parseInt(JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n            \"What is the \" + attribute + \" of this exercise?\", null));\n    }\n\n\n    //EFFECTS: returns the name for a new clothing item\n    private String collectName(String type) {\n        return JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n            \"What is the name of this \" + type + \" exercise ?\", null).toUpperCase();\n    }\n\n    //MODIFIES: this\n    //EFFECTS: does the edit on the exercise if found\n    private void doEdit() {\n        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n                \"What is the name of the exercise you want to edit?\", null);\n        name = name.toUpperCase();\n        if (null != myWorkout.findExercise(name)) {\n            Exercise exercise = myWorkout.findExercise(name);\n            editMenu(exercise);\n        } else {\n            errorMessage(\"Exercise of name \" + name + \" was not found.\");\n        }\n    }\n\n    //MODIFIES: this\n    //EFFECTS: removes the clothing item selected\n    private void doRemove() {\n        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n                \"What is the name of the Exercise you want to remove?\", null);\n        name = name.toUpperCase();\n        if (myWorkout.removeExercise(name)) {\n            informationMessage(name + \" was successfully removed from your workouts.\", \"Removed\");\n        } else {\n            errorMessage(\"There was no exercise of name \" + name + \" in your workouts\");\n        }\n        updateExerciseList();\n    }\n\n    //EFFECTS: finds and opens exercise if it exists\n    private void doFind() {\n        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n                \"What is the name of the exercise you want to find?\", null);\n        name = name.toUpperCase();\n        if (null != myWorkout.findExercise(name)) {\n            Exercise exercise = myWorkout.findExercise(name);\n            displayItem(exercise);\n        } else {\n            errorMessage(\"Exercise of name \" + name + \" was not found.\");\n        }\n    }\n\n    //EFFECTS: Displays an exercise in a pop up with details and a picture\n    private void displayItem(Exercise exercise) {\n//        ImageIcon icon = getTypeImage(exercise);\n        //update icon later in JOptionPane.showMessageDialog(WorkoutManagerProgram.this, exerciseDetails(exercise),\n        //                exercise.getName(),JOptionPane.INFORMATION_MESSAGE, icon);\n        JOptionPane.showMessageDialog(WorkoutManagerProgram.this, displayExerciseInfo(exercise),\n                exercise.getName(),JOptionPane.INFORMATION_MESSAGE);\n    }\n\n    //https://www.roseindia.net/tutorial/java/swing/comboinjoptionpane.html\n    //MODIFIES: this\n    //EFFECTS: completes the editing and selects field & new name for field\n    private void editMenu(Exercise exercise) {\n        String [] editOptions = new String[] {\"Name\", \"Weight\",\"Type\",\"Sets\",\"Reps\"};\n        String whatToEdit = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n                \"This Exercise currently has the following statistics and details:\\n\" + displayExerciseInfo(exercise)\n                + \"\\n\\nPlease select what field you would like to edit.\", \"Details & Stats\",\n                JOptionPane.INFORMATION_MESSAGE, null, editOptions,\"Name\");\n        String newDetailOrStat = JOptionPane.showInputDialog(WorkoutManagerProgram.this,\n                \"What do you want to change the \" + whatToEdit + \" to?\", null);\n        if (whatToEdit.equals(\"Name\")) {\n            exercise.setName(newDetailOrStat);\n        } else if (whatToEdit.equals(\"Weight\")) {\n            exercise.setWeight(Integer.parseInt(newDetailOrStat));\n        } else if (whatToEdit.equals(\"Type\")) {\n            exercise.setType(ExerciseType.valueOf(newDetailOrStat.toUpperCase()));\n        } else if (whatToEdit.equals(\"Sets\")) {\n            exercise.setSets(Integer.parseInt(newDetailOrStat));\n        } else if (whatToEdit.equals(\"Reps\")) {\n            exercise.setReps(Integer.parseInt(newDetailOrStat));\n        }\n        informationMessage(whatToEdit + \" was changed to \" + newDetailOrStat, \"Item Edited\");\n        updateExerciseList();\n    }\n\n    //EFFECTS: prints out the information of the selected exercise\n    private String displayExerciseInfo(Exercise exercise) {\n        return \"Name: \" + exercise.getName() + \"\\nWeight: \" + exercise.getWeight() + \"\\nType: \" + exercise.getType()\n            + \"\\nSets: \" + exercise.getSets() + \"\\nReps: \" + exercise.getReps();\n    }\n\n    //MODIFIES: this\n    //EFFECTS: updates the current clothing list to display any changes made\n    private void updateExerciseList() {\n        whatToRemove();\n        createExerciseList(myWorkout.getAllExercises());\n    }\n\n    //MODIFIES: this\n    //EFFECTS: removes the correct list of either clothing or outfit\n    private void whatToRemove() {\n        remove(scroller);\n        if (isExercisesDisplayed) {\n            isExercisesDisplayed = false;\n        }\n        buttonPane.remove(openButton);\n        remove(buttonPane);\n    }\n\n    //MODIFIES: this\n    //EFFECTS: adds items to file menu\n    private void fileMenu() {\n        JMenuItem save = new JMenuItem(new AbstractAction(\"Save Workout\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                saveWorkout();\n            }\n        });\n        file.add(save);\n        JMenuItem load = new JMenuItem(new AbstractAction(\"Load Workout\") {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                loadWorkout();\n            }\n        });\n        file.add(load);\n    }\n\n    //EFFECTS: saves the workout to file\n    private void saveWorkout() {\n        Writer writer;\n        try {\n            writer = new Writer(WORKOUT_FILE);\n            writer.write(myWorkout);\n            writer.close();\n            informationMessage(\"Workout saved to file \" + WORKOUT_FILE, \"File Saved\");\n        } catch (IOException e) {\n            errorMessage(\"Unable to save wardrobe to \" + WORKOUT_FILE);\n        }\n    }\n\n    // MODIFIES: this\n    // EFFECTS: loads workout from WORKOUT_FILE, if that file exists;\n    // otherwise initializes workout with default values\n    private void loadWorkout() {\n        Reader reader;\n        try {\n            reader = new Reader(WORKOUT_FILE);\n            myWorkout = reader.read();\n            informationMessage(\"Successfully loaded a wardrobe from \" + WORKOUT_FILE, \"File Loaded\");\n        } catch (Exception e) {\n            errorMessage(\"Unable to load a wardrobe from \" + WORKOUT_FILE);\n        }\n    }\n\n    private void informationMessage(String message, String title) {\n        JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, title,\n                JOptionPane.INFORMATION_MESSAGE);\n    }\n\n    private void errorMessage(String message) {\n        JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, \"Error\",\n                JOptionPane.ERROR_MESSAGE);\n    }\n\n\n    public static void main(String [] args) {\n        EventQueue.invokeLater(() -> {\n            WorkoutManagerProgram wm = new WorkoutManagerProgram();\n            wm.setVisible(true);\n        });\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/ui/WorkoutManagerProgram.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/main/ui/WorkoutManagerProgram.java	(date 1605647372058)
+@@ -17,18 +17,38 @@
+ public class WorkoutManagerProgram extends JFrame {
+     public static final int WIDTH = 600;
+     public static final int HEIGHT = 400;
++    private static final ImageIcon CHEST = scaleImageIcon("./data/images/chest_image.png");
++    private static final ImageIcon ARMS = scaleImageIcon("./data/images/arm_image.png");
++    private static final ImageIcon LEGS = scaleImageIcon("./data//images/leg_image.png");
++    private static final ImageIcon SHOULDERS = scaleImageIcon("./data/images/shoulder_image.png");
++    private static final ImageIcon BACK = scaleImageIcon("./data/images/back_image.png");
++    private static final ImageIcon EDIT = scaleImageIcon("./data/images/edit_image.png");
++    private static final ImageIcon LOADING = scaleImageIcon("./data/images/load_image.png");
++
+     private JMenu exercises;
+     private JMenu workouts;
+     private JMenu file;
+     private static final String WORKOUT_FILE = "./data/workout.json";
+     private Workout myWorkout;
+     private List<Exercise> exerciseList;
++    private List<Exercise> workoutList;
++    private Container mainPane;
+     private JScrollPane scroller;
++    private JScrollPane scroller2;
+     private JList<String> exerciseStringList;
+     private JList<String> workoutStringList;
+     private boolean isExercisesDisplayed;
+     private JPanel buttonPane;
+     private JButton openButton;
++    private GridBagConstraints gbcExercises = new GridBagConstraints();
++    private GridBagConstraints gbcWorkouts = new GridBagConstraints();
++    private GridBagConstraints gbcButton = new GridBagConstraints();
++    private GridBagConstraints gbcLabelEast = new GridBagConstraints();
++    private GridBagConstraints gbcLabelWest = new GridBagConstraints();
++    private JLabel allExercisesLabel;
++    private JLabel workoutDayLabel;
++    private JPanel westLabelPanel;
++    private JPanel eastLabelPanel;
+ 
+ 
+ 
+@@ -38,6 +58,7 @@
+         initializeGraphics();
+     }
+ 
++    //https://docs.oracle.com/javase/tutorial/uiswing/examples/components/SplitPaneDemo2Project/src/components/SplitPaneDemo2.java
+     // MODIFIES: this
+     // EFFECTS:  draws the JFrame window where this WorkoutManager will operate, and populates the tools to be used
+     //           to manipulate this GUI
+@@ -49,10 +70,10 @@
+         setVisible(true);
+         createMenus();
+         initializeData();
++        mainPane = getContentPane();
++        mainPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
++        mainPane.setLayout(new GridBagLayout());
+         createExerciseList(myWorkout.getAllExercises());
+-        JLabel label = new JLabel("Label");
+-        JScrollPane scrollPane = new JScrollPane(label);
+-        this.add(scrollPane, BorderLayout.EAST);
+     }
+ 
+     //MODIFIES: this
+@@ -94,6 +115,19 @@
+         configureList(listModel);
+     }
+ 
++    //MODIFIES: this
++    //EFFECTS: creates the current exercise list and adds to main frame
++    public void createWorkoutList(List<Exercise> addToSideFrame) {
++        DefaultListModel<String> listModelWorkout = new DefaultListModel<>();
++        workoutList = new ArrayList<>();
++        for (Exercise e : addToSideFrame) {
++            listModelWorkout.addElement(e.getType() + " - Name: " + e.getName() + ", Weight: " + e.getWeight()
++                    + " , Sets x Reps: " + e.getSets() + "x" + e.getReps());
++            workoutList.add(e);
++        }
++        configureWorkoutList(listModelWorkout);
++    }
++
+     //EFFECTS: configures the list in the pane
+     private void configureList(ListModel listModel) {
+         scroller = new JScrollPane();
+@@ -102,26 +136,84 @@
+         exerciseStringList.setFont(new Font("System", Font.PLAIN, 24));
+         scroller.setViewportView(exerciseStringList);
+         exerciseStringList.setLayoutOrientation(JList.VERTICAL);
+-        add(scroller);
++        //GridBagLayoutConfiguration Coordinates
++        allExercisesGBC();
++        mainPane.add(scroller, gbcExercises);
++        addExerciseHeadingPanel();
+         addButtonViewExercise();
+         setVisible(true);
+     }
+ 
+-    //EFFECTS: configures the list in the pane
++    //helper to establish constraints for the all exercises window and button
++    private void allExercisesGBC() {
++        gbcExercises.gridx = 0;
++        gbcExercises.weightx = 0.5;
++        gbcExercises.weighty = 0.5;
++        gbcExercises.fill = GridBagConstraints.BOTH;
++        gbcExercises.gridy = 1;
++        gbcExercises.ipady = 40;
++        gbcButton.anchor = GridBagConstraints.PAGE_END;
++        gbcButton.gridx = 0;
++    }
++
++    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/
++    //  examples/layout/GridBagLayoutDemoProject/src/layout/GridBagLayoutDemo.java
++    //EFFECTS: configures the list in a second pane
+     private void configureWorkoutList(ListModel listModel) {
+-        scroller = new JScrollPane();
+-        exerciseStringList = new JList<>(listModel);
+-        exerciseStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+-        exerciseStringList.setFont(new Font("System", Font.PLAIN, 24));
+-        scroller.setViewportView(exerciseStringList);
+-        exerciseStringList.setLayoutOrientation(JList.VERTICAL);
+-        add(scroller);
+-        addButtonViewExercise();
++        scroller2 = new JScrollPane();
++        workoutStringList = new JList<>(listModel);
++        workoutStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
++        workoutStringList.setFont(new Font("System", Font.PLAIN, 24));
++        scroller2.setViewportView(workoutStringList);
++        workoutStringList.setLayoutOrientation(JList.VERTICAL);
++        //GridBagLayoutConfiguration Coordinates
++        workoutListGBC();
++        mainPane.add(scroller2, gbcWorkouts);
++        addHeadingPanel();
++        addButtonViewWorkoutExercises();
+         setVisible(true);
+     }
+ 
+-    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
+-    //https://stackoverflow.com/questions/5911565/how-to-add-multiple-actionlisteners-for-multiple-buttons-in-java-swing/5911621 <- for all button actions
++    //helper for workoutListGBC and button
++    private void workoutListGBC() {
++        gbcWorkouts.gridx = 1;
++        gbcWorkouts.weightx = 0.4;
++        gbcWorkouts.fill = GridBagConstraints.BOTH;
++        gbcWorkouts.gridy = 1;
++        gbcButton.anchor = GridBagConstraints.PAGE_END;
++        gbcButton.gridx = 1;
++    }
++
++    //EFFECTS: Heading panel for workout days
++    private void addHeadingPanel() {
++        workoutDayLabel.setFont(new Font("System", Font.ITALIC, 24));
++        eastLabelPanel = new JPanel();
++        eastLabelPanel.setLayout(new BoxLayout(eastLabelPanel, BoxLayout.LINE_AXIS));
++        eastLabelPanel.add(workoutDayLabel);
++        gbcLabelEast.gridx = 1;
++        gbcLabelEast.gridy = 0;
++        gbcLabelEast.anchor = GridBagConstraints.NORTH;
++        mainPane.add(eastLabelPanel, gbcLabelEast);
++        eastLabelPanel.setVisible(true);
++    }
++
++    //EFFECTS: Heading panel for workout days
++    private void addExerciseHeadingPanel() {
++        allExercisesLabel = new JLabel("All Exercises");
++        allExercisesLabel.setFont(new Font("System", Font.ITALIC, 24));
++        westLabelPanel = new JPanel();
++        westLabelPanel.setLayout(new BoxLayout(westLabelPanel, BoxLayout.LINE_AXIS));
++        westLabelPanel.add(allExercisesLabel);
++        gbcLabelWest.gridx = 0;
++        gbcLabelWest.gridy = 0;
++        gbcLabelWest.anchor = GridBagConstraints.NORTH;
++        mainPane.add(westLabelPanel, gbcLabelWest);
++        westLabelPanel.setVisible(true);
++    }
++
++    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=
++    //https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
++    //https://stackoverflow.com/questions/5911565/how-to-add-multiple-actionlisteners-for-multiple-buttons-in-java-swing/5911621
+     //MODIFIES: this
+     //EFFECTS: adds a button to bottom panel that opens the selected exercise item
+     private void addButtonViewExercise() {
+@@ -137,7 +229,29 @@
+         buttonPane = new JPanel();
+         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+         buttonPane.add(openButton);
+-        add(buttonPane, BorderLayout.PAGE_END);
++        gbcButton.gridy = 2;
++        mainPane.add(buttonPane, gbcButton);
++        openButton.setVisible(true);
++        buttonPane.setVisible(true);
++    }
++
++
++    //MODIFIES: this
++    //EFFECTS: adds a button to bottom panel that opens the selected exercise item for individual workout days
++    private void addButtonViewWorkoutExercises() {
++        openButton = new JButton(new AbstractAction("Open Exercise") {
++            @Override
++            public void actionPerformed(ActionEvent e) {
++                int index = workoutStringList.getSelectedIndex();
++                Exercise selectedItem = workoutList.get(index);
++                displayItem(selectedItem);
++            }
++        });
++        openButton.setFont(new Font("System", Font.PLAIN, 20));
++        buttonPane = new JPanel();
++        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
++        buttonPane.add(openButton);
++        mainPane.add(buttonPane, gbcButton);
+         openButton.setVisible(true);
+         buttonPane.setVisible(true);
+     }
+@@ -172,7 +286,7 @@
+ 
+ 
+     //MODIFIES: this
+-    //EFFECTS: adds items to addClothing submenu
++    //EFFECTS: adds items to addExercise submenu
+     private void addExerciseSubmenu(JMenu addExercise) {
+         JMenuItem addArmExercise = new JMenuItem(new AbstractAction("Arms") {
+             @Override
+@@ -199,7 +313,7 @@
+     }
+ 
+     //MODIFIES: this
+-    //EFFECTS: adds items to addClothing submenu
++    //EFFECTS: adds items to addExercise submenu
+     private void addExerciseSubmenuContinued(JMenu addExercise) {
+         JMenuItem addShoulderExercise = new JMenuItem(new AbstractAction("Shoulders") {
+             @Override
+@@ -259,16 +373,20 @@
+     private void workoutDay(String weekday) {
+         switch (weekday) {
+             case "Monday":
+-                createExerciseList(myWorkout.mondayWorkout());
++                workoutDayLabel = new JLabel("Monday Workout");
++                createWorkoutList(myWorkout.mondayWorkout());
+                 break;
+             case "Tuesday":
+-                createExerciseList(myWorkout.tuesdayWorkout());
++                workoutDayLabel = new JLabel("Tuesday Workout");
++                createWorkoutList(myWorkout.tuesdayWorkout());
+                 break;
+             case "Wednesday":
+-                createExerciseList(myWorkout.wednesdayWorkout());
++                workoutDayLabel = new JLabel("Wednesday Workout");
++                createWorkoutList(myWorkout.wednesdayWorkout());
+                 break;
+             case "Thursday":
+-                createExerciseList(myWorkout.thursdayWorkout());
++                workoutDayLabel = new JLabel("Thursday Workout");
++                createWorkoutList(myWorkout.thursdayWorkout());
+                 break;
+         }
+     }
+@@ -280,10 +398,7 @@
+         Integer sets = collectIntSetsReps("sets");
+         Integer reps = collectIntSetsReps("reps");
+ 
+-        Exercise addedExercise = new Exercise(name, type);
+-        addedExercise.setWeight(weight);
+-        addedExercise.setSets(sets);
+-        addedExercise.setReps(reps);
++        Exercise addedExercise = new Exercise(name, type, weight,sets,reps);
+ 
+         try {
+             myWorkout.addExerciseFromButton(addedExercise);
+@@ -307,62 +422,76 @@
+     }
+ 
+ 
+-    //EFFECTS: returns the name for a new clothing item
++    //EFFECTS: returns the name for a new exercise
+     private String collectName(String type) {
+         return JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+             "What is the name of this " + type + " exercise ?", null).toUpperCase();
+     }
+ 
++    //https://stackoverflow.com/questions/11494222/how-to-handle-cancel-button-in-joptionpane/11494262
+     //MODIFIES: this
+     //EFFECTS: does the edit on the exercise if found
+     private void doEdit() {
+-        String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+-                "What is the name of the exercise you want to edit?", null);
+-        name = name.toUpperCase();
+-        if (null != myWorkout.findExercise(name)) {
+-            Exercise exercise = myWorkout.findExercise(name);
+-            editMenu(exercise);
+-        } else {
+-            errorMessage("Exercise of name " + name + " was not found.");
++        String name = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
++                "What is the name of the exercise you want to edit?", "Edit Exercise",
++                JOptionPane.PLAIN_MESSAGE, EDIT, null, "");
++        if (name != null) {
++            name = name.toUpperCase();
++            if (null != myWorkout.findExercise(name)) {
++                Exercise exercise = myWorkout.findExercise(name);
++                editMenu(exercise);
++            } else {
++                errorMessage("Exercise of name " + name + " was not found.");
++            }
++        } else {
++            createExerciseList(myWorkout.getAllExercises());
+         }
+     }
+ 
+     //MODIFIES: this
+-    //EFFECTS: removes the clothing item selected
++    //EFFECTS: removes the exercise item selected
+     private void doRemove() {
+         String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                 "What is the name of the Exercise you want to remove?", null);
+-        name = name.toUpperCase();
+-        if (myWorkout.removeExercise(name)) {
+-            informationMessage(name + " was successfully removed from your workouts.", "Removed");
+-        } else {
+-            errorMessage("There was no exercise of name " + name + " in your workouts");
+-        }
+-        updateExerciseList();
++        if (name != null) {
++            name = name.toUpperCase();
++            if (myWorkout.removeExercise(name)) {
++                informationMessage(name + " was successfully removed from your workouts.", "Removed");
++            } else {
++                errorMessage("There was no exercise of name " + name + " in your workouts");
++            }
++            updateExerciseList();
++        } else {
++            createExerciseList(myWorkout.getAllExercises());
++        }
+     }
+ 
++    //https://stackoverflow.com/questions/33961793/custom-icon-joptionpane-showinputdialog
+     //EFFECTS: finds and opens exercise if it exists
+     private void doFind() {
+         String name = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                 "What is the name of the exercise you want to find?", null);
+-        name = name.toUpperCase();
+-        if (null != myWorkout.findExercise(name)) {
+-            Exercise exercise = myWorkout.findExercise(name);
+-            displayItem(exercise);
+-        } else {
+-            errorMessage("Exercise of name " + name + " was not found.");
++        if (name != null) {
++            name = name.toUpperCase();
++            if (null != myWorkout.findExercise(name)) {
++                Exercise exercise = myWorkout.findExercise(name);
++                displayItem(exercise);
++            } else {
++                errorMessage("Exercise of name " + name + " was not found.");
++            }
++        } else {
++            createExerciseList(myWorkout.getAllExercises());
+         }
+     }
+ 
+     //EFFECTS: Displays an exercise in a pop up with details and a picture
+     private void displayItem(Exercise exercise) {
+-//        ImageIcon icon = getTypeImage(exercise);
+-        //update icon later in JOptionPane.showMessageDialog(WorkoutManagerProgram.this, exerciseDetails(exercise),
+-        //                exercise.getName(),JOptionPane.INFORMATION_MESSAGE, icon);
++        ImageIcon icon = getMuscleTypeImage(exercise);
+         JOptionPane.showMessageDialog(WorkoutManagerProgram.this, displayExerciseInfo(exercise),
+-                exercise.getName(),JOptionPane.INFORMATION_MESSAGE);
++                exercise.getName(),JOptionPane.INFORMATION_MESSAGE, icon);
+     }
+ 
++    //https://stackoverflow.com/questions/11494222/how-to-handle-cancel-button-in-joptionpane
+     //https://www.roseindia.net/tutorial/java/swing/comboinjoptionpane.html
+     //MODIFIES: this
+     //EFFECTS: completes the editing and selects field & new name for field
+@@ -370,23 +499,27 @@
+         String [] editOptions = new String[] {"Name", "Weight","Type","Sets","Reps"};
+         String whatToEdit = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                 "This Exercise currently has the following statistics and details:\n" + displayExerciseInfo(exercise)
+-                + "\n\nPlease select what field you would like to edit.", "Details & Stats",
+-                JOptionPane.INFORMATION_MESSAGE, null, editOptions,"Name");
+-        String newDetailOrStat = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+-                "What do you want to change the " + whatToEdit + " to?", null);
+-        if (whatToEdit.equals("Name")) {
+-            exercise.setName(newDetailOrStat);
+-        } else if (whatToEdit.equals("Weight")) {
+-            exercise.setWeight(Integer.parseInt(newDetailOrStat));
+-        } else if (whatToEdit.equals("Type")) {
+-            exercise.setType(ExerciseType.valueOf(newDetailOrStat.toUpperCase()));
+-        } else if (whatToEdit.equals("Sets")) {
+-            exercise.setSets(Integer.parseInt(newDetailOrStat));
+-        } else if (whatToEdit.equals("Reps")) {
+-            exercise.setReps(Integer.parseInt(newDetailOrStat));
+-        }
+-        informationMessage(whatToEdit + " was changed to " + newDetailOrStat, "Item Edited");
+-        updateExerciseList();
++                 + "\n\nWhat would you like to edit?", "Details & Stats", JOptionPane.INFORMATION_MESSAGE, EDIT,
++                editOptions,"Name");
++        if (whatToEdit != null) {
++            String newDetailOrStat = JOptionPane.showInputDialog(WorkoutManagerProgram.this,
++                    "What do you want to change the " + whatToEdit + " to?", null);
++            if (whatToEdit.equals("Name")) {
++                exercise.setName(newDetailOrStat);
++            } else if (whatToEdit.equals("Weight")) {
++                exercise.setWeight(Integer.parseInt(newDetailOrStat));
++            } else if (whatToEdit.equals("Type")) {
++                exercise.setType(ExerciseType.valueOf(newDetailOrStat.toUpperCase()));
++            } else if (whatToEdit.equals("Sets")) {
++                exercise.setSets(Integer.parseInt(newDetailOrStat));
++            } else if (whatToEdit.equals("Reps")) {
++                exercise.setReps(Integer.parseInt(newDetailOrStat));
++            }
++            informationMessage(whatToEdit + " was changed to " + newDetailOrStat, "Item Edited");
++            updateExerciseList();
++        } else {
++            doEdit();
++        }
+     }
+ 
+     //EFFECTS: prints out the information of the selected exercise
+@@ -396,14 +529,30 @@
+     }
+ 
+     //MODIFIES: this
+-    //EFFECTS: updates the current clothing list to display any changes made
++    //EFFECTS: updates the current exercise list to display any changes made
+     private void updateExerciseList() {
+         whatToRemove();
+         createExerciseList(myWorkout.getAllExercises());
+     }
+ 
++    //EFFECTS: gets the correct image icon for type
++    private ImageIcon getMuscleTypeImage(Exercise exercise) {
++        ExerciseType type = exercise.getType();
++        switch (type) {
++            case CHEST:
++                return CHEST;
++            case ARMS:
++                return ARMS;
++            case BACK:
++                return BACK;
++            case LEGS:
++                return LEGS;
++        }
++        return SHOULDERS;
++    }
++
+     //MODIFIES: this
+-    //EFFECTS: removes the correct list of either clothing or outfit
++    //EFFECTS: removes the correct list of either exercise or workout
+     private void whatToRemove() {
+         remove(scroller);
+         if (isExercisesDisplayed) {
+@@ -437,11 +586,12 @@
+         Writer writer;
+         try {
+             writer = new Writer(WORKOUT_FILE);
++            writer.open();
+             writer.write(myWorkout);
+             writer.close();
+             informationMessage("Workout saved to file " + WORKOUT_FILE, "File Saved");
+         } catch (IOException e) {
+-            errorMessage("Unable to save wardrobe to " + WORKOUT_FILE);
++            errorMessage("Unable to save workout to " + WORKOUT_FILE);
+         }
+     }
+ 
+@@ -453,15 +603,15 @@
+         try {
+             reader = new Reader(WORKOUT_FILE);
+             myWorkout = reader.read();
+-            informationMessage("Successfully loaded a wardrobe from " + WORKOUT_FILE, "File Loaded");
++            informationMessage("Successfully loaded a workout from " + WORKOUT_FILE, "File Loaded");
+         } catch (Exception e) {
+-            errorMessage("Unable to load a wardrobe from " + WORKOUT_FILE);
++            errorMessage("Unable to load a workout from " + WORKOUT_FILE);
+         }
+     }
+ 
+     private void informationMessage(String message, String title) {
+         JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, title,
+-                JOptionPane.INFORMATION_MESSAGE);
++                JOptionPane.INFORMATION_MESSAGE, LOADING);
+     }
+ 
+     private void errorMessage(String message) {
+@@ -469,6 +619,15 @@
+                 JOptionPane.ERROR_MESSAGE);
+     }
+ 
++    //https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel/16345968
++    // MODIFIES: this
++    //EFFECTS: scales the image at the file location to be of desired size
++    private static ImageIcon scaleImageIcon(String fileLocation) {
++        ImageIcon imageIcon = new ImageIcon(fileLocation);
++        Image image = imageIcon.getImage();
++        Image scaledInstance = image.getScaledInstance(150,150,Image.SCALE_SMOOTH);
++        return new ImageIcon(scaledInstance);
++    }
+ 
+     public static void main(String [] args) {
+         EventQueue.invokeLater(() -> {
+Index: src/main/persistence/Reader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package persistence;\n\nimport model.Exercise;\nimport model.ExerciseType;\nimport model.Workout;\nimport org.json.JSONArray;\nimport org.json.JSONObject;\n\nimport java.io.IOException;\nimport java.nio.charset.StandardCharsets;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\nimport java.util.stream.Stream;\n\n //Referenced JsonDemo Code Provided By UBC\npublic class Reader {\n    private static String source;\n\n    // EFFECTS: constructs reader to read from source file\n    public Reader(String source) {\n        this.source = source;\n    }\n\n    // EFFECTS: reads workout from file and returns it;\n    // throws IOException if an error occurs reading data from file\n    public static Workout read() throws IOException {\n        String jsonData = readFile(source);\n        JSONObject jsonObject = new JSONObject(jsonData);\n        return parseWorkout(jsonObject);\n    }\n\n    // EFFECTS: reads source file as string and returns it\n    public static String readFile(String source) throws IOException {\n        StringBuilder contentBuilder = new StringBuilder();\n\n        try (Stream<String> stream = Files.lines(Paths.get(source), StandardCharsets.UTF_8)) {\n            stream.forEach(s -> contentBuilder.append(s));\n        }\n\n        return contentBuilder.toString();\n    }\n\n    // EFFECTS: parses workout from JSON object and returns it\n    private static Workout parseWorkout(JSONObject jsonObject) {\n        Workout w = new Workout();\n        addExercises(w, jsonObject);\n        return w;\n    }\n\n    // MODIFIES: w\n    // EFFECTS: parses list of exercises from JSON object and adds them to workroom\n    private static void addExercises(Workout w, JSONObject jsonObject) {\n        JSONArray jsonArray = jsonObject.getJSONArray(\"all-exercises\");\n        for (Object json : jsonArray) {\n            JSONObject nextExercise = (JSONObject) json;\n            addExercise(w, nextExercise);\n        }\n    }\n\n    // MODIFIES: w\n    // EFFECTS: parses exercise from JSON object and adds it to workout\n    private static void addExercise(Workout w, JSONObject jsonObject) {\n        String name = jsonObject.getString(\"name\");\n        ExerciseType type = ExerciseType.valueOf(jsonObject.getString(\"type\"));\n        Exercise e1 = new Exercise(name, type);\n        w.storeExercise(e1);\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/persistence/Reader.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/main/persistence/Reader.java	(date 1605644645528)
+@@ -62,7 +62,10 @@
+     private static void addExercise(Workout w, JSONObject jsonObject) {
+         String name = jsonObject.getString("name");
+         ExerciseType type = ExerciseType.valueOf(jsonObject.getString("type"));
+-        Exercise e1 = new Exercise(name, type);
++        Integer weight = jsonObject.getInt("weight");
++        Integer sets = jsonObject.getInt("sets");
++        Integer reps = jsonObject.getInt("reps");
++        Exercise e1 = new Exercise(name, type, weight, sets, reps);
+         w.storeExercise(e1);
+     }
+ 
+Index: src/main/model/Exercise.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\n\nimport org.json.JSONObject;\nimport persistence.Writable;\n\npublic class Exercise implements Writable {\n\n    private ExerciseType type;\n    private int weight;\n    private String name;\n    private int sets;\n    private int reps;\n    private String description;\n\n    //MODIFIES: this\n    //EFFECTS: creates an Exercise object with the name of the exercise and type(ENUM)\n    public Exercise(String name, ExerciseType type) {\n        this.name = name;\n        this.weight = 0;\n        this.type = type;\n        this.sets = 3;\n        this.reps = 5;\n    }\n\n    //getters\n    public String getName() {\n        return name;\n    }\n\n    public ExerciseType getType() {\n        return type;\n    }\n\n    public int getWeight() {\n        return weight;\n    }\n\n    public int getSets() {\n        return sets;\n    }\n\n    public int getReps() {\n        return reps;\n    }\n\n\n    //MODIFIES: this\n    //EFFECTS: updates name to the given string\n    public void setName(String name) {\n        this.name = name;\n    }\n\n    //MODIFIES: this\n    //EFFECTS: updates type to the given type\n    public void setType(ExerciseType type) {\n        this.type = type;\n    }\n\n    //MODIFIES: this\n    //EFFECTS: updates weight lifted to the given num\n    public void setWeight(int num) {\n        weight = num;\n    }\n\n    //MODIFIES: this\n    //EFFECTS: updates reps lifted to the given num\n    public void setReps(int num) {\n        reps = num;\n    }\n\n    //MODIFIES: this\n    //EFFECTS: updates sets lifted to the given num\n    public void setSets(int num) {\n        sets = num;\n    }\n\n    @Override\n    public JSONObject toJson() {\n        JSONObject json = new JSONObject();\n        json.put(\"name\", name);\n        json.put(\"type\", type);\n        return json;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/model/Exercise.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/main/model/Exercise.java	(date 1605644199896)
+@@ -14,12 +14,12 @@
+ 
+     //MODIFIES: this
+     //EFFECTS: creates an Exercise object with the name of the exercise and type(ENUM)
+-    public Exercise(String name, ExerciseType type) {
++    public Exercise(String name, ExerciseType type, Integer weight, Integer sets, Integer reps) {
+         this.name = name;
+-        this.weight = 0;
++        this.weight = weight;
+         this.type = type;
+-        this.sets = 3;
+-        this.reps = 5;
++        this.sets = sets;
++        this.reps = reps;
+     }
+ 
+     //getters
+@@ -79,6 +79,9 @@
+         JSONObject json = new JSONObject();
+         json.put("name", name);
+         json.put("type", type);
++        json.put("weight", weight);
++        json.put("sets", sets);
++        json.put("reps", reps);
+         return json;
+     }
+ }
+Index: src/test/model/ExerciseTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\n\nimport org.json.JSONObject;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\n\npublic class ExerciseTest {\n    private Exercise testExercise;\n\n    @BeforeEach\n    public void runBefore() {\n        testExercise = new Exercise(\"Bench Press\", ExerciseType.CHEST);\n    }\n\n    @Test\n    public void testConstructor(){\n        assertEquals(testExercise.getName(), \"Bench Press\");\n        assertEquals(testExercise.getType(), ExerciseType.CHEST);\n        assertEquals(testExercise.getWeight(), 0);\n        assertEquals(testExercise.getSets(), 3);\n        assertEquals(testExercise.getReps(),5);\n    }\n\n    @Test\n    public void setWeightTest(){\n        assertEquals(testExercise.getWeight(), 0);\n        testExercise.setWeight(225);\n        assertEquals(testExercise.getWeight(), 225);\n    }\n\n    @Test\n    public void setSetsTest(){\n        assertEquals(testExercise.getSets(), 3);\n        testExercise.setSets(4);\n        assertEquals(testExercise.getSets(), 4);\n    }\n\n    @Test\n    public void setRepsTest(){\n        assertEquals(testExercise.getReps(), 5);\n        testExercise.setReps(12);\n        assertEquals(testExercise.getReps(), 12);\n    }\n\n    @Test\n    public void toJsonTest() {\n        JSONObject json = testExercise.toJson();\n        String exerciseName = json.getString(\"name\");\n        Object muscleType = json.get(\"type\");\n        assertEquals(exerciseName, \"Bench Press\");\n        assertEquals(muscleType, ExerciseType.CHEST);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/model/ExerciseTest.java	(revision 190235936df806d9b62d761ef3fc8a5c21a4b274)
++++ src/test/model/ExerciseTest.java	(date 1605644226407)
+@@ -11,7 +11,7 @@
+ 
+     @BeforeEach
+     public void runBefore() {
+-        testExercise = new Exercise("Bench Press", ExerciseType.CHEST);
++        testExercise = new Exercise("Bench Press", ExerciseType.CHEST, 225, 5, 5);
+     }
+ 
+     @Test
