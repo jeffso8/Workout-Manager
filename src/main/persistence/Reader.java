@@ -62,7 +62,10 @@ public class Reader {
     private void addExercise(Workout w, JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         ExerciseType type = ExerciseType.valueOf(jsonObject.getString("type"));
-        Exercise e1 = new Exercise(name, type);
+        Integer weight = jsonObject.getInt("weight");
+        Integer sets = jsonObject.getInt("sets");
+        Integer reps = jsonObject.getInt("reps");
+        Exercise e1 = new Exercise(name, type, weight, sets, reps);
         w.storeExercise(e1);
     }
 

@@ -46,8 +46,8 @@ public class WriterTest extends JSONTest {
     void testWriterGeneralWorkout() {
         try {
             Workout w = new Workout();
-            w.storeExercise(new Exercise("Bicep Curls", ExerciseType.ARMS));
-            w.storeExercise(new Exercise("Bench Press", ExerciseType.CHEST));
+            w.storeExercise(new Exercise("Bicep Curls", ExerciseType.ARMS, 30, 4, 12));
+            w.storeExercise(new Exercise("Bench Press", ExerciseType.CHEST, 225, 5,5));
             Writer writer = new Writer("./data/testWriterGeneralWorkout.json");
             writer.open();
             writer.write(w);

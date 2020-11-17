@@ -11,7 +11,7 @@ public class ExerciseTest {
 
     @BeforeEach
     public void runBefore() {
-        testExercise = new Exercise("Bench Press", ExerciseType.CHEST);
+        testExercise = new Exercise("Bench Press", ExerciseType.CHEST, 225, 5, 5);
     }
 
     @Test

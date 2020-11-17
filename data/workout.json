@@ -1,18 +1,142 @@
 {"all-exercises": [
     {
+        "reps": 4,
+        "sets": 10,
         "name": "BICEP CURLS",
+        "weight": 35,
         "type": "ARMS"
     },
     {
+        "reps": 3,
+        "sets": 15,
+        "name": "TRICEP CABLE PULLS",
+        "weight": 20,
+        "type": "ARMS"
+    },
+    {
+        "reps": 4,
+        "sets": 5,
+        "name": "BARBELL CURLS",
+        "weight": 50,
+        "type": "ARMS"
+    },
+    {
+        "reps": 4,
+        "sets": 8,
+        "name": "HAMMER CURLS",
+        "weight": 30,
+        "type": "ARMS"
+    },
+    {
+        "reps": 5,
+        "sets": 5,
         "name": "BENCH PRESS",
+        "weight": 185,
         "type": "CHEST"
     },
     {
+        "reps": 6,
+        "sets": 15,
+        "name": "PUSHUPS",
+        "weight": 0,
+        "type": "CHEST"
+    },
+    {
+        "reps": 5,
+        "sets": 5,
+        "name": "INCLINE DUMBBELL PRESS",
+        "weight": 60,
+        "type": "CHEST"
+    },
+    {
+        "reps": 4,
+        "sets": 10,
+        "name": "FLIES",
+        "weight": 35,
+        "type": "CHEST"
+    },
+    {
+        "reps": 4,
+        "sets": 8,
         "name": "CABLE ROWS",
+        "weight": 70,
         "type": "BACK"
     },
     {
+        "reps": 5,
+        "sets": 3,
         "name": "DEADLIFTS",
+        "weight": 235,
         "type": "BACK"
+    },
+    {
+        "reps": 6,
+        "sets": 6,
+        "name": "PULLUPS",
+        "weight": 15,
+        "type": "BACK"
+    },
+    {
+        "reps": 5,
+        "sets": 3,
+        "name": "UPRIGHT ROWS",
+        "weight": 85,
+        "type": "BACK"
+    },
+    {
+        "reps": 5,
+        "sets": 5,
+        "name": "BACK SQUAT",
+        "weight": 225,
+        "type": "LEGS"
+    },
+    {
+        "reps": 5,
+        "sets": 5,
+        "name": "FRONT SQUAT",
+        "weight": 225,
+        "type": "LEGS"
+    },
+    {
+        "reps": 5,
+        "sets": 4,
+        "name": "LEG PRESS",
+        "weight": 145,
+        "type": "LEGS"
+    },
+    {
+        "reps": 3,
+        "sets": 8,
+        "name": "HAMSTRING CURLS",
+        "weight": 70,
+        "type": "LEGS"
+    },
+    {
+        "reps": 4,
+        "sets": 10,
+        "name": "LEG EXTENSIONS",
+        "weight": 80,
+        "type": "LEGS"
+    },
+    {
+        "reps": 4,
+        "sets": 8,
+        "name": "STANDING OVERHEAD PRESS",
+        "weight": 115,
+        "type": "SHOULDERS"
+    },
+    {
+        "reps": 4,
+        "sets": 6,
+        "name": "SEATED OVERHEAD PRESS",
+        "weight": 60,
+        "type": "SHOULDERS"
+    },
+    {
+        "reps": 3,
+        "sets": 12,
+        "name": "LAT RAISES",
+        "weight": 15,
+        "type": "SHOULDERS"
     }
 ]}

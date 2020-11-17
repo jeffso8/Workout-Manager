@@ -43,6 +43,19 @@ public class Exercise implements Writable {
         return reps;
     }
 
+
+    //MODIFIES: this
+    //EFFECTS: updates name to the given string
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    //MODIFIES: this
+    //EFFECTS: updates type to the given type
+    public void setType(ExerciseType type) {
+        this.type = type;
+    }
+
     //MODIFIES: this
     //EFFECTS: updates weight lifted to the given num
     public void setWeight(int num) {
