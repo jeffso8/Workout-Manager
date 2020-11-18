@@ -104,7 +104,7 @@ public class WorkoutTest {
 
         //Run tuesdayWorkout, and a list of exercises should be returned
 
-        testWorkout.tuesdayWorkout();
+        System.out.println(testWorkout.tuesdayWorkout());
         assertFalse(testWorkout.tuesdayWorkout().isEmpty());
         assertEquals(testWorkout.tuesdayWorkout().size(), 4);
 
@@ -129,7 +129,7 @@ public class WorkoutTest {
         //Run wednesdayWorkout, and a list of exercises should be returned
         testWorkout.wednesdayWorkout();
         assertFalse(testWorkout.wednesdayWorkout().isEmpty());
-        assertEquals(testWorkout.wednesdayWorkout().size(), 5);
+        assertEquals(testWorkout.wednesdayWorkout().size(), 6);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class WorkoutTest {
         //Run thursdayWorkout, and a list of exercises should be returned
         testWorkout.thursdayWorkout();
         assertFalse(testWorkout.thursdayWorkout().isEmpty());
-        assertEquals(testWorkout.thursdayWorkout().size(), 5);
+        assertEquals(testWorkout.thursdayWorkout().size(), 4);
     }
 
     @Test

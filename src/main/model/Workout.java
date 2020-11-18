@@ -102,46 +102,6 @@ public class Workout implements Writable {
     }
 
     //MODIFIES: this
-    //EFFECTS: generates a random number up to size of the list and
-    // extracts that index from chestExercises
-    public Exercise getOneChestExercise() {
-        int rnd  = new Random().nextInt(chestExercises.size());
-        return this.chestExercises.get(rnd);
-    }
-
-    //MODIFIES: this
-    //EFFECTS: generates a random number up to size of the list
-    // and extracts that index from armExercises
-    public Exercise getOneArmExercise() {
-        int rnd  = new Random().nextInt(armExercises.size());
-        return this.armExercises.get(rnd);
-    }
-
-    //MODIFIES: this
-    //EFFECTS: generates a random number up to size of the list
-    // and extracts that index legExercises
-    public Exercise getOneLegExercise() {
-        int rnd  = new Random().nextInt(legExercises.size());
-        return this.legExercises.get(rnd);
-    }
-
-    //MODIFIES: this
-    //EFFECTS: generates a random number up to size of the list
-    // and extracts that index from backExercises
-    public Exercise getOneBackExercise() {
-        int rnd  = new Random().nextInt(backExercises.size());
-        return this.backExercises.get(rnd);
-    }
-
-    //MODIFIES: this
-    //EFFECTS: generates a random number up to size of the list
-    // and extracts that index from shoulderExercises
-    public Exercise getOneShoulderExercise() {
-        int rnd  = new Random().nextInt(shoulderExercises.size());
-        return this.shoulderExercises.get(rnd);
-    }
-
-    //MODIFIES: this
     //EFFECTS: returns all exercises in the form of a list of Exercises
     public List<Exercise> getAllExercises() {
         this.allExercises.clear();
@@ -154,16 +114,14 @@ public class Workout implements Writable {
         return allExercises;
     }
 
+
     //MODIFIES: this
     //REQUIRES: At least 3 exercises in the Chest Exercise array, and at least 2 exercises in the Arm Exercise Array
     //EFFECTS: returns a list of exercises to do on Monday
     public List<Exercise> mondayWorkout() {
         List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.add(this.getOneChestExercise());
-        exerciseList.add(this.getOneChestExercise());
-        exerciseList.add(this.getOneChestExercise());
-        exerciseList.add(this.getOneArmExercise());
-        exerciseList.add(this.getOneArmExercise());
+        exerciseList.addAll(getRandomExercises(chestExercises, 3));
+        exerciseList.addAll(getRandomExercises(armExercises, 2));
 
         return exerciseList;
     }
@@ -172,23 +130,18 @@ public class Workout implements Writable {
     //EFFECTS: returns a list of exercises to do on Tuesday
     public List<Exercise> tuesdayWorkout() {
         List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.add(this.getOneLegExercise());
-        exerciseList.add(this.getOneLegExercise());
-        exerciseList.add(this.getOneLegExercise());
-        exerciseList.add(this.getOneLegExercise());
+        exerciseList.addAll(getRandomExercises(legExercises, 4));
 
         return exerciseList;
+
     }
 
     //REQUIRES: At least 4 exercises in the Shoulders Exercise array, and at least 2 exercises in the Arm Exercise Array
     //EFFECTS: returns a list of exercises to do on Monday
     public List<Exercise> wednesdayWorkout() {
         List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.add(this.getOneShoulderExercise());
-        exerciseList.add(this.getOneShoulderExercise());
-        exerciseList.add(this.getOneShoulderExercise());
-        exerciseList.add(this.getOneArmExercise());
-        exerciseList.add(this.getOneArmExercise());
+        exerciseList.addAll(getRandomExercises(shoulderExercises, 4));
+        exerciseList.addAll(getRandomExercises(armExercises, 2));
 
         return exerciseList;
 
@@ -198,11 +151,23 @@ public class Workout implements Writable {
     //EFFECTS: returns a list of exercises to do on Monday
     public List<Exercise> thursdayWorkout() {
         List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.add(this.getOneBackExercise());
-        exerciseList.add(this.getOneBackExercise());
-        exerciseList.add(this.getOneBackExercise());
-        exerciseList.add(this.getOneChestExercise());
-        exerciseList.add(this.getOneBackExercise());
+        exerciseList.addAll(getRandomExercises(backExercises, 3));
+        exerciseList.addAll(getRandomExercises(chestExercises, 2));
+
+        return exerciseList;
+    }
+
+    public List<Exercise> getRandomExercises(List<Exercise> exercises, Integer num) {
+        Integer rnd;
+        List<Integer> numbers = new ArrayList<>();
+        List<Exercise> exerciseList = new ArrayList<>();
+        do {
+            rnd = new Random().nextInt(exercises.size());
+            if (!numbers.contains(rnd)) {
+                exerciseList.add(exercises.get(rnd));
+                numbers.add(rnd);
+            }
+        } while (numbers.size() < Math.min(exercises.size(), num));
 
         return exerciseList;
     }

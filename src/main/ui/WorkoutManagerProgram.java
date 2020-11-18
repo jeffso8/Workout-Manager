@@ -27,6 +27,7 @@ public class WorkoutManagerProgram extends JFrame {
     private JList<String> exerciseStringList;
     private JList<String> workoutStringList;
     private boolean isExercisesDisplayed;
+    private boolean isWorkoutsDisplayed;
     private JPanel buttonPane;
     private JButton openButton;
 
@@ -141,6 +142,26 @@ public class WorkoutManagerProgram extends JFrame {
         buttonPane.setVisible(true);
     }
 
+//    //MODIFIES: this
+//    //EFFECTS: adds a button to bottom panel that opens the selected exercise item for individual workout days
+//    private void addButtonMakeWorkout() {
+//        openButton = new JButton(new AbstractAction("Add to Workout") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int index = workoutStringList.getSelectedIndex();
+//                Exercise selectedItem = workoutList.get(index);
+//                displayPopupExercise(selectedItem);
+//            }
+//        });
+//        openButton.setFont(new Font("System", Font.PLAIN, 20));
+//        buttonPane = new JPanel();
+//        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+//        buttonPane.add(openButton);
+//        mainPane.add(buttonPane, gbcButton);
+//        openButton.setVisible(true);
+//        buttonPane.setVisible(true);
+//    }
+
     //MODIFIES: this
     //EFFECTS: adds sub menu items to exercises menu tab
     private void exerciseMenu(JMenu addExercise) {
@@ -219,6 +240,13 @@ public class WorkoutManagerProgram extends JFrame {
     //MODIFIES: this
     //EFFECTS: adds a dropdown menu to workouts
     private void workoutMenu() {
+//        JMenu addWorkout = new JMenu(new AbstractAction("Add Workout") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                addWorkout();
+//            }
+//        });
+//        workouts.add(addWorkout);
         JMenuItem mondayWorkout = new JMenuItem(new AbstractAction("Monday") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -274,6 +302,11 @@ public class WorkoutManagerProgram extends JFrame {
                 break;
         }
     }
+
+//    private void addWorkout() {
+//
+//    }
+
 
     //https://stackoverflow.com/questions/11494222/how-to-handle-cancel-button-in-joptionpane/11494262
     //MODIFIES: this
@@ -442,12 +475,24 @@ public class WorkoutManagerProgram extends JFrame {
         createExerciseList(myWorkout.getAllExercises());
     }
 
+
     //MODIFIES: this
     //EFFECTS: removes the correct list of either clothing or outfit
     private void whatToRemove() {
         remove(scroller);
         if (isExercisesDisplayed) {
             isExercisesDisplayed = false;
+        }
+        buttonPane.remove(openButton);
+        remove(buttonPane);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: removes the correct list of either exercise or workout
+    private void removeWorkoutElements() {
+        remove(scroller2);
+        if (isWorkoutsDisplayed) {
+            isWorkoutsDisplayed = false;
         }
         buttonPane.remove(openButton);
         remove(buttonPane);
