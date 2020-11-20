@@ -39,6 +39,7 @@ public class WorkoutManagerProgram extends JFrame {
     private static final String ADD_LEG_EX = "./data/sounds/leg_sound.wav";
     private static final String ADD_SHOULDER_EX = "./data/sounds/shoulder_sound.wav";
     private static final String EDIT_SOUND = "./data/sounds/edit_sound.wav";
+    private static final String START_SOUND = "./data/sounds/startup_sound.wav";
 
     private JMenu exercises;
     private JMenu workouts;
@@ -105,6 +106,7 @@ public class WorkoutManagerProgram extends JFrame {
     private void initializeData() {
         myWorkout = new Workout();
         loadWorkout();
+        playSound(START_SOUND);
     }
 
     //https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html
