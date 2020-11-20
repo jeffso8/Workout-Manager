@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.InWorkoutException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,8 @@ public class WorkoutTest {
         assertTrue(testWorkout.getBackExercises().isEmpty());
         assertTrue(testWorkout.getLegExercises().isEmpty());
         assertTrue(testWorkout.getShoulderExercises().isEmpty());
-
+        assertEquals(7, testWorkout.getWorkoutDays().size());
+        assertFalse(testWorkout.getWorkoutPlanner().isEmpty());
     }
 
     @Test
@@ -151,7 +153,7 @@ public class WorkoutTest {
         //Run thursdayWorkout, and a list of exercises should be returned
         testWorkout.dayWorkout("Chest & Back");
         assertFalse(testWorkout.dayWorkout("Chest & Back").isEmpty());
-        assertEquals(testWorkout.dayWorkout("Chest & Back").size(), 4);
+        assertEquals(testWorkout.dayWorkout("Chest & Back").size(), 3);
     }
 
     @Test
@@ -174,6 +176,74 @@ public class WorkoutTest {
         testWorkout.dayWorkout("Rest");
         assertFalse(testWorkout.dayWorkout("Rest").isEmpty());
         assertEquals(testWorkout.dayWorkout("Rest").size(), 1);
+    }
+
+    @Test
+    public void addExerciseFromButtonTestNoException() {
+        Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
+        testWorkout.storeExercise(ex);
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        try {
+            testWorkout.addExerciseFromButton(ex2);
+            assertEquals(1, testWorkout.getChestExercises().size());
+        } catch (InWorkoutException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void addExerciseFromButtonTestException() {
+        Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
+        testWorkout.storeExercise(ex);
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex2);
+        try {
+            testWorkout.addExerciseFromButton(ex2);
+            fail();
+        } catch (InWorkoutException e) {
+            assertEquals("This exercise already exists in the workout", e.getMessage());
+        }
+    }
+
+    @Test
+    public void findExerciseTestFound() {
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex2);
+        assertEquals(ex2, testWorkout.findExercise("Push-ups"));
+    }
+
+    @Test
+    public void findExerciseTestNotFound() {
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex2);
+        assertEquals(null, testWorkout.findExercise("Bench Press"));
+    }
+
+    @Test
+    public void removeExerciseTestContains() {
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex2);
+        assertTrue(testWorkout.removeExercise("Push-ups"));
+        assertEquals(1, testWorkout.getAllExercises().size());
+    }
+
+    @Test
+    public void removeExerciseTestNotContained() {
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex2);
+        assertFalse(testWorkout.removeExercise("Bench Press"));
     }
 
     @Test

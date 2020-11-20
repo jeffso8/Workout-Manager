@@ -3,6 +3,6 @@ package exceptions;
 public class InWorkoutException extends Exception {
 
     public InWorkoutException() {
-        super();
+        super("This exercise already exists in the workout");
     }
 }

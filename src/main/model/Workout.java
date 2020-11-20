@@ -201,7 +201,7 @@ public class Workout implements Writable {
     //EFFECTS: produces the exercise with given name in all workouts, or null if not found
     public Exercise findExercise(String name) {
         name = name.toUpperCase();
-        for (Exercise e : allExercises) {
+        for (Exercise e : getAllExercises()) {
             String upperName =  e.getName().toUpperCase();
             if (upperName.equals(name)) {
                 return e;
@@ -215,7 +215,7 @@ public class Workout implements Writable {
     // otherwise returns false
     public boolean removeExercise(String name) {
         Exercise exercise = findExercise(name);
-        if (allExercises.contains(exercise)) {
+        if (getAllExercises().contains(exercise)) {
             switch (exercise.getType()) {
                 case SHOULDERS:
                     shoulderExercises.remove(exercise);
