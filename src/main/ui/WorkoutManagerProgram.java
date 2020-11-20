@@ -23,19 +23,48 @@ import java.util.List;
 public class WorkoutManagerProgram extends JFrame {
     public static final int WIDTH = 600;
     public static final int HEIGHT = 400;
+    private static final ImageIcon CHEST = scaleImageIcon("./data/images/chest_image.png");
+    private static final ImageIcon ARMS = scaleImageIcon("./data/images/arm_image.png");
+    private static final ImageIcon LEGS = scaleImageIcon("./data//images/leg_image.png");
+    private static final ImageIcon SHOULDERS = scaleImageIcon("./data/images/shoulder_image.png");
+    private static final ImageIcon BACK = scaleImageIcon("./data/images/back_image.png");
+    private static final ImageIcon EDIT = scaleImageIcon("./data/images/edit_image.png");
+    private static final ImageIcon LOADING = scaleImageIcon("./data/images/load_image.png");
+    private static final ImageIcon FIND = scaleImageIcon("./data/images/find_image.png");
+    private static final ImageIcon REMOVE = scaleImageIcon("./data/images/eraser_image.png");
+    private static final ImageIcon WATER = scaleImageIcon("./data/images/water_image.png");
+    private static final String ADD_ARM_EX = "./data/sounds/arm_sound.wav";
+    private static final String ADD_BACK_EX = "./data/sounds/back_sound.wav";
+    private static final String ADD_CHEST_EX = "./data/sounds/chest_sound.wav";
+    private static final String ADD_LEG_EX = "./data/sounds/leg_sound.wav";
+    private static final String ADD_SHOULDER_EX = "./data/sounds/shoulder_sound.wav";
+    private static final String EDIT_SOUND = "./data/sounds/edit_sound.wav";
+
     private JMenu exercises;
     private JMenu workouts;
     private JMenu file;
     private static final String WORKOUT_FILE = "./data/workout.json";
     private Workout myWorkout;
     private List<Exercise> exerciseList;
-    private JScrollPane scroller;
+    private List<Exercise> workoutList;
+    private Container mainPane;
+    private JScrollPane allExerciseScroller;
+    private JScrollPane workoutScroller;
     private JList<String> exerciseStringList;
     private JList<String> workoutStringList;
     private boolean isExercisesDisplayed;
     private boolean isWorkoutsDisplayed;
     private JPanel buttonPane;
     private JButton openButton;
+    private GridBagConstraints gbcExercises = new GridBagConstraints();
+    private GridBagConstraints gbcWorkouts = new GridBagConstraints();
+    private GridBagConstraints gbcButton = new GridBagConstraints();
+    private GridBagConstraints gbcLabelEast = new GridBagConstraints();
+    private GridBagConstraints gbcLabelWest = new GridBagConstraints();
+    private JLabel allExercisesLabel;
+    private JLabel workoutDayLabel = new JLabel("Monday Workout");
+    private JPanel westLabelPanel;
+    private JPanel eastLabelPanel = new JPanel();
 
 
 
@@ -45,6 +74,8 @@ public class WorkoutManagerProgram extends JFrame {
         initializeGraphics();
     }
 
+    //https://docs.oracle.com/javase/tutorial/uiswing/examples/components/SplitPaneDemo2Project/src/components/SplitPaneDemo2.java
+    //https://stackoverflow.com/questions/2361510/how-to-save-application-options-before-exit
     // MODIFIES: this
     // EFFECTS:  draws the JFrame window where this WorkoutManager will operate, and populates the tools to be used
     //           to manipulate this GUI
@@ -56,10 +87,17 @@ public class WorkoutManagerProgram extends JFrame {
         setVisible(true);
         createMenus();
         initializeData();
+        mainPane = getContentPane();
+        mainPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        mainPane.setLayout(new GridBagLayout());
         createExerciseList(myWorkout.getAllExercises());
-        JLabel label = new JLabel("Label");
-        JScrollPane scrollPane = new JScrollPane(label);
-        this.add(scrollPane, BorderLayout.EAST);
+        createWorkoutList(myWorkout.dayWorkout("Chest & Arms"));
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitGUI();
+            }
+        });
     }
 
     //MODIFIES: this
@@ -101,34 +139,110 @@ public class WorkoutManagerProgram extends JFrame {
         configureList(listModel);
     }
 
+    //MODIFIES: this
+    //EFFECTS: creates the current exercise list and adds to main frame
+    public void createWorkoutList(List<Exercise> addToSideFrame) {
+        DefaultListModel<String> listModelWorkout = new DefaultListModel<>();
+        workoutList = new ArrayList<>();
+        for (Exercise e : addToSideFrame) {
+            listModelWorkout.addElement(e.getType() + " - Name: " + e.getName() + ", Weight: " + e.getWeight()
+                    + " , Sets x Reps: " + e.getSets() + "x" + e.getReps());
+            workoutList.add(e);
+        }
+        configureWorkoutList(listModelWorkout);
+    }
+
+    //MODIFIES: this
     //EFFECTS: configures the list in the pane
     private void configureList(ListModel listModel) {
-        scroller = new JScrollPane();
+        allExerciseScroller = new JScrollPane();
         exerciseStringList = new JList<>(listModel);
         exerciseStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         exerciseStringList.setFont(new Font("Geneva", Font.PLAIN, 21));
-        scroller.setViewportView(exerciseStringList);
+        allExerciseScroller.setViewportView(exerciseStringList);
         exerciseStringList.setLayoutOrientation(JList.VERTICAL);
-        add(scroller);
+        //GridBagLayoutConfiguration Coordinates
+        allExercisesGBC();
+        mainPane.add(allExerciseScroller, gbcExercises);
+        addExerciseHeadingPanel();
         addButtonViewExercise();
         setVisible(true);
     }
 
-    //EFFECTS: configures the list in the pane
+    //helper to establish constraints for the all exercises window and button
+    private void allExercisesGBC() {
+        gbcExercises.gridx = 0;
+        gbcExercises.weightx = 0.5;
+        gbcExercises.weighty = 0.5;
+        gbcExercises.fill = GridBagConstraints.BOTH;
+        gbcExercises.gridy = 1;
+        gbcExercises.ipady = 40;
+        gbcButton.anchor = GridBagConstraints.PAGE_END;
+        gbcButton.gridx = 0;
+    }
+
+    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/
+    //  examples/layout/GridBagLayoutDemoProject/src/layout/GridBagLayoutDemo.java
+    //EFFECTS: configures the list in a second pane
     private void configureWorkoutList(ListModel listModel) {
-        scroller = new JScrollPane();
-        exerciseStringList = new JList<>(listModel);
-        exerciseStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        exerciseStringList.setFont(new Font("System", Font.PLAIN, 24));
-        scroller.setViewportView(exerciseStringList);
-        exerciseStringList.setLayoutOrientation(JList.VERTICAL);
-        add(scroller);
-        addButtonViewExercise();
+        workoutScroller = new JScrollPane();
+        workoutStringList = new JList<>(listModel);
+        workoutStringList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        workoutStringList.setFont(new Font("Geneva", Font.PLAIN, 21));
+        workoutScroller.setViewportView(workoutStringList);
+        workoutScroller.revalidate();
+        workoutStringList.setLayoutOrientation(JList.VERTICAL);
+        //GridBagLayoutConfiguration Coordinates
+        workoutListGBC();
+        mainPane.add(workoutScroller, gbcWorkouts);
+        addHeadingPanel();
+        addButtonViewWorkoutExercises();
         setVisible(true);
     }
 
-    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
-    //https://stackoverflow.com/questions/5911565/how-to-add-multiple-actionlisteners-for-multiple-buttons-in-java-swing/5911621 <- for all button actions
+    //EFFECTS: helper for workoutListGBC and button
+    private void workoutListGBC() {
+        gbcWorkouts.gridx = 1;
+        gbcWorkouts.weightx = 0.4;
+        gbcWorkouts.fill = GridBagConstraints.BOTH;
+        gbcWorkouts.gridy = 1;
+        gbcButton.anchor = GridBagConstraints.PAGE_END;
+        gbcButton.gridx = 1;
+    }
+
+    //https://stackoverflow.com/questions/8608902/the-correct-way-to-swap-a-component-in-java
+    //MODIFIES: this
+    //EFFECTS: Heading panel for workout days
+    private void addHeadingPanel() {
+        workoutDayLabel.setFont(new Font("System", Font.ITALIC, 24));
+        eastLabelPanel.setLayout(new BoxLayout(eastLabelPanel, BoxLayout.LINE_AXIS));
+        eastLabelPanel.add(workoutDayLabel);
+        eastLabelPanel.repaint();
+        gbcLabelEast.gridx = 1;
+        gbcLabelEast.gridy = 0;
+        gbcLabelEast.anchor = GridBagConstraints.NORTH;
+        mainPane.add(eastLabelPanel, gbcLabelEast);
+        eastLabelPanel.setVisible(true);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: Heading panel for workout days
+    private void addExerciseHeadingPanel() {
+        allExercisesLabel = new JLabel("All Exercises");
+        allExercisesLabel.setFont(new Font("System", Font.ITALIC, 24));
+        westLabelPanel = new JPanel();
+        westLabelPanel.setLayout(new BoxLayout(westLabelPanel, BoxLayout.LINE_AXIS));
+        westLabelPanel.add(allExercisesLabel);
+        gbcLabelWest.gridx = 0;
+        gbcLabelWest.gridy = 0;
+        gbcLabelWest.anchor = GridBagConstraints.NORTH;
+        mainPane.add(westLabelPanel, gbcLabelWest);
+        westLabelPanel.setVisible(true);
+    }
+
+    //https://docs.oracle.com/javase/tutorial/displayCode.html?code=
+    //https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
+    //https://stackoverflow.com/questions/5911565/how-to-add-multiple-actionlisteners-for-multiple-buttons-in-java-swing/5911621
     //MODIFIES: this
     //EFFECTS: adds a button to bottom panel that opens the selected exercise item
     private void addButtonViewExercise() {
@@ -144,7 +258,29 @@ public class WorkoutManagerProgram extends JFrame {
         buttonPane = new JPanel();
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.add(openButton);
-        add(buttonPane, BorderLayout.PAGE_END);
+        gbcButton.gridy = 2;
+        mainPane.add(buttonPane, gbcButton);
+        openButton.setVisible(true);
+        buttonPane.setVisible(true);
+    }
+
+
+    //MODIFIES: this
+    //EFFECTS: adds a button to bottom panel that opens the selected exercise item for individual workout days
+    private void addButtonViewWorkoutExercises() {
+        openButton = new JButton(new AbstractAction("View Exercise") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = workoutStringList.getSelectedIndex();
+                Exercise selectedItem = workoutList.get(index);
+                displayPopupExercise(selectedItem);
+            }
+        });
+        openButton.setFont(new Font("System", Font.PLAIN, 20));
+        buttonPane = new JPanel();
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+        buttonPane.add(openButton);
+        mainPane.add(buttonPane, gbcButton);
         openButton.setVisible(true);
         buttonPane.setVisible(true);
     }
@@ -179,7 +315,7 @@ public class WorkoutManagerProgram extends JFrame {
 
 
     //MODIFIES: this
-    //EFFECTS: adds items to addClothing submenu
+    //EFFECTS: adds items to addExercise submenu
     private void addExerciseSubmenu(JMenu addExercise) {
         JMenuItem addArmExercise = new JMenuItem(new AbstractAction("Arms") {
             @Override
@@ -206,7 +342,7 @@ public class WorkoutManagerProgram extends JFrame {
     }
 
     //MODIFIES: this
-    //EFFECTS: adds items to addClothing submenu
+    //EFFECTS: adds items to addExercise submenu
     private void addExerciseSubmenuContinued(JMenu addExercise) {
         JMenuItem addShoulderExercise = new JMenuItem(new AbstractAction("Shoulders") {
             @Override
@@ -368,16 +504,19 @@ public class WorkoutManagerProgram extends JFrame {
         String selectedDayGroup = myWorkout.getWorkoutPlanner().get(weekday);
         switch (weekday) {
             case "Monday":
-                createExerciseList(myWorkout.mondayWorkout());
+                workoutDayLabel = new JLabel("Monday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
                 break;
             case "Tuesday":
-                createExerciseList(myWorkout.tuesdayWorkout());
+                workoutDayLabel = new JLabel("Tuesday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
                 break;
             case "Wednesday":
-                createExerciseList(myWorkout.wednesdayWorkout());
-                break;
-            case "Thursday":
-                createExerciseList(myWorkout.thursdayWorkout());
+                workoutDayLabel = new JLabel("Wednesday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
                 break;
         }
         workoutDayContinued(weekday);
@@ -539,10 +678,7 @@ public class WorkoutManagerProgram extends JFrame {
         Integer sets = collectIntSetsReps("sets");
         Integer reps = collectIntSetsReps("reps");
 
-        Exercise addedExercise = new Exercise(name, type);
-        addedExercise.setWeight(weight);
-        addedExercise.setSets(sets);
-        addedExercise.setReps(reps);
+        Exercise addedExercise = new Exercise(name, type, weight,sets,reps);
 
         try {
             myWorkout.addExerciseFromButton(addedExercise);
@@ -568,24 +704,40 @@ public class WorkoutManagerProgram extends JFrame {
     }
 
 
-    //EFFECTS: returns the name for a new clothing item
+    //EFFECTS: returns the name for a new exercise
     private String collectName(String type) {
         return JOptionPane.showInputDialog(WorkoutManagerProgram.this,
             "What is the name of this " + type + " exercise ?", null).toUpperCase();
     }
 
     //MODIFIES: this
-    //EFFECTS: updates the current clothing list to display any changes made
+    //EFFECTS: updates the current exercise list to display any changes made
     private void updateExerciseList() {
         removeElements();
         createExerciseList(myWorkout.getAllExercises());
     }
 
 
+    //EFFECTS: gets the correct image icon for type
+    private ImageIcon getMuscleTypeImage(Exercise exercise) {
+        ExerciseType type = exercise.getType();
+        switch (type) {
+            case CHEST:
+                return CHEST;
+            case ARMS:
+                return ARMS;
+            case BACK:
+                return BACK;
+            case LEGS:
+                return LEGS;
+        }
+        return SHOULDERS;
+    }
+
     //MODIFIES: this
-    //EFFECTS: removes the correct list of either clothing or outfit
-    private void whatToRemove() {
-        remove(scroller);
+    //EFFECTS: removes the correct list of either exercise or workout
+    private void removeElements() {
+        remove(allExerciseScroller);
         if (isExercisesDisplayed) {
             isExercisesDisplayed = false;
         }
@@ -596,7 +748,7 @@ public class WorkoutManagerProgram extends JFrame {
     //MODIFIES: this
     //EFFECTS: removes the correct list of either exercise or workout
     private void removeWorkoutElements() {
-        remove(scroller2);
+        remove(workoutScroller);
         if (isWorkoutsDisplayed) {
             isWorkoutsDisplayed = false;
         }
@@ -629,12 +781,13 @@ public class WorkoutManagerProgram extends JFrame {
         Writer writer;
         try {
             writer = new Writer(WORKOUT_FILE);
+            writer.open();
             writer.write(myWorkout);
             writer.close();
             informationMessage("Successfully saved file... " + "\nFile name: "
                     +  WORKOUT_FILE, "File Saved");
         } catch (IOException e) {
-            errorMessage("Unable to save wardrobe to " + WORKOUT_FILE);
+            errorMessage("Unable to save workout to " + WORKOUT_FILE);
         }
     }
 
@@ -646,16 +799,17 @@ public class WorkoutManagerProgram extends JFrame {
         try {
             reader = new Reader(WORKOUT_FILE);
             myWorkout = reader.read();
-            informationMessage("Successfully loaded a wardrobe from " + WORKOUT_FILE, "File Loaded");
+            informationMessage("Successfully loaded a workout... " + "\nFile Name: "
+                    + WORKOUT_FILE, "Load File");
         } catch (Exception e) {
-            errorMessage("Unable to load a wardrobe from " + WORKOUT_FILE);
+            errorMessage("Unable to load a workout from " + WORKOUT_FILE);
         }
     }
 
     //EFFECTS: message layout that displays information for multiple scenarios using showMessageDialog
     private void informationMessage(String message, String title) {
         JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, title,
-                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE, LOADING);
     }
 
     //EFFECTS: message layout that displays error message for multiple scenarios using showMessageDialog
@@ -678,7 +832,28 @@ public class WorkoutManagerProgram extends JFrame {
         }
     }
 
+    //https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel/16345968
+    //https://www.codota.com/code/java/methods/java.awt.Image/getScaledInstance
+    //https://docs.oracle.com/javase/7/docs/api/java/awt/Image.html
+    //MODIFIES: this
+    //EFFECTS: scales the image at the file location to be of desired size
+    private static ImageIcon scaleImageIcon(String fileLocation) {
+        ImageIcon imageIcon = new ImageIcon(fileLocation);
+        Image image = imageIcon.getImage();
+        Image scaledInstance = image.getScaledInstance(150,150,Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledInstance);
+    }
 
+    //https://stackoverflow.com/questions/16372241/run-function-on-jframe-close
+    //MODIFIES: this
+    //EFFECTS: closes the window and saves the workout to file
+    private void exitGUI() {
+        saveWorkout();
+        dispose();
+        System.exit(0);
+    }
+
+    //https://docs.oracle.com/javase/7/docs/api/java/awt/EventQueue.html#invokeLater(java.lang.Runnable)
     public static void main(String [] args) {
         EventQueue.invokeLater(() -> {
             WorkoutManagerProgram wm = new WorkoutManagerProgram();

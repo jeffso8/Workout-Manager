@@ -56,6 +56,13 @@
         "type": "CHEST"
     },
     {
+        "reps": 5,
+        "sets": 5,
+        "name": "DUMBBELL PRESS",
+        "weight": 60,
+        "type": "CHEST"
+    },
+    {
         "reps": 4,
         "sets": 8,
         "name": "CABLE ROWS",
