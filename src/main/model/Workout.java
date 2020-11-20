@@ -5,9 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 //Represents a Workout having exercises that are split into specific containers
 public class Workout implements Writable {
@@ -17,6 +15,8 @@ public class Workout implements Writable {
     private List<Exercise> shoulderExercises;
     private List<Exercise> legExercises;
     private List<Exercise> allExercises;
+    private List<String> workoutDays;
+    private Map<String, String> workoutPlanner;
 
     //EFFECTS: constructs a workout class containing multiple different array lists
     public Workout() {
@@ -26,6 +26,20 @@ public class Workout implements Writable {
         shoulderExercises = new ArrayList<>();
         legExercises = new ArrayList<>();
         allExercises = new ArrayList<>();
+        workoutDays = new ArrayList<>();
+        workoutDays.addAll(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
+        workoutPlanner = new HashMap<>();
+        initWorkoutPlanner();
+    }
+
+    public void initWorkoutPlanner() {
+        workoutPlanner.put(workoutDays.get(0), "Chest & Arms");
+        workoutPlanner.put(workoutDays.get(1), "Legs");
+        workoutPlanner.put(workoutDays.get(2), "Shoulder & Arms");
+        workoutPlanner.put(workoutDays.get(3), "Chest & Back");
+        workoutPlanner.put(workoutDays.get(4), "Chest & Arms");
+        workoutPlanner.put(workoutDays.get(5), "Rest");
+        workoutPlanner.put(workoutDays.get(6), "Rest");
     }
 
     // REQUIRES: ex != null
@@ -81,6 +95,14 @@ public class Workout implements Writable {
     }
 
     //getters
+    public List<String> getWorkoutDays() {
+        return workoutDays;
+    }
+
+    public Map<String, String> getWorkoutPlanner() {
+        return workoutPlanner;
+    }
+
     public List<Exercise> getArmExercises() {
         return armExercises;
     }
@@ -114,49 +136,53 @@ public class Workout implements Writable {
         return allExercises;
     }
 
+    //REQUIRES: given string must be one of "Chest & Arms", "Legs", "Shoulder & Arms", "Chest & Back", "Rest"
+    //MODIFIES: this
+    //EFFECTS: returns a list of exercises for a given muscle group
+    public List<Exercise> getWorkoutFromTypes(String muscleGroup) {
+        if (muscleGroup.equals("Chest & Arms")) {
+            List<Exercise> exerciseList = new ArrayList<>();
+            exerciseList.addAll(getRandomExercises(chestExercises, 3));
+            exerciseList.addAll(getRandomExercises(armExercises, 2));
+            return exerciseList;
+        } else if (muscleGroup.equals("Legs")) {
+            List<Exercise> exerciseList = new ArrayList<>();
+            exerciseList.addAll(getRandomExercises(legExercises, 4));
+            return exerciseList;
+        } else if (muscleGroup.equals("Shoulder & Arms")) {
+            List<Exercise> exerciseList = new ArrayList<>();
+            exerciseList.addAll(getRandomExercises(shoulderExercises, 4));
+            exerciseList.addAll(getRandomExercises(armExercises, 2));
+            return exerciseList;
+        } else {
+            return getWorkoutFromTypesContinued(muscleGroup);
+        }
+    }
 
     //MODIFIES: this
-    //REQUIRES: At least 3 exercises in the Chest Exercise array, and at least 2 exercises in the Arm Exercise Array
-    //EFFECTS: returns a list of exercises to do on Monday
-    public List<Exercise> mondayWorkout() {
-        List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.addAll(getRandomExercises(chestExercises, 3));
-        exerciseList.addAll(getRandomExercises(armExercises, 2));
-
-        return exerciseList;
+    //EFFECTS: returns a list of exercises for a given muscle group
+    public List<Exercise> getWorkoutFromTypesContinued(String muscleGroup) {
+        if (muscleGroup.equals("Chest & Back")) {
+            List<Exercise> exerciseList = new ArrayList<>();
+            exerciseList.addAll(getRandomExercises(chestExercises, 3));
+            exerciseList.addAll(getRandomExercises(backExercises, 2));
+            return exerciseList;
+        } else if (muscleGroup.equals("Rest")) {
+            List<Exercise> exerciseList = new ArrayList<>();
+            exerciseList.add(new Exercise("Rest",ExerciseType.REST,0,0,0));
+            return exerciseList;
+        } else {
+            return null;
+        }
     }
 
-    //REQUIRES: At least 4 exercises in the Legs Exercise array
-    //EFFECTS: returns a list of exercises to do on Tuesday
-    public List<Exercise> tuesdayWorkout() {
-        List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.addAll(getRandomExercises(legExercises, 4));
-
-        return exerciseList;
-
+    //MODIFIES: this
+    //EFFECTS: returns a list of exercises according to the given muscle group
+    public List<Exercise> dayWorkout(String muscleGroup) {
+        return getWorkoutFromTypes(muscleGroup);
     }
 
-    //REQUIRES: At least 4 exercises in the Shoulders Exercise array, and at least 2 exercises in the Arm Exercise Array
-    //EFFECTS: returns a list of exercises to do on Monday
-    public List<Exercise> wednesdayWorkout() {
-        List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.addAll(getRandomExercises(shoulderExercises, 4));
-        exerciseList.addAll(getRandomExercises(armExercises, 2));
-
-        return exerciseList;
-
-    }
-
-    //REQUIRES: At least 4 exercises in the Back Exercise array, and at least 1 exercises in the Chest Exercise Array,
-    //EFFECTS: returns a list of exercises to do on Monday
-    public List<Exercise> thursdayWorkout() {
-        List<Exercise> exerciseList = new ArrayList<>();
-        exerciseList.addAll(getRandomExercises(backExercises, 3));
-        exerciseList.addAll(getRandomExercises(chestExercises, 2));
-
-        return exerciseList;
-    }
-
+    //EFFECTS: returns a random exercise within specified range
     public List<Exercise> getRandomExercises(List<Exercise> exercises, Integer num) {
         Integer rnd;
         List<Integer> numbers = new ArrayList<>();

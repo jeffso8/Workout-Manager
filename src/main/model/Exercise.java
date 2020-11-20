@@ -3,6 +3,8 @@ package model;
 import org.json.JSONObject;
 import persistence.Writable;
 
+import java.util.Objects;
+
 public class Exercise implements Writable {
 
     private ExerciseType type;
@@ -83,5 +85,22 @@ public class Exercise implements Writable {
         json.put("sets", sets);
         json.put("reps", reps);
         return json;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Exercise exercise = (Exercise) o;
+        return Objects.equals(name, exercise.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

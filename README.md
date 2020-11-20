@@ -41,6 +41,7 @@
 #### GUI Specific User Stories: 
 - As a user, when I start the interface, I want to have the previous file loaded
 - As a user, I want to be able to scroll through and view all the exercises on the main panel
-- As a user, I want to be able to add, update, remove and find individual exercises
-- As a user, I want to be able to view workouts for every day of the week, and be able to configure them
+- As a user, I want to be able to add, update, remove and find individual exercises to and within the Workout class
+- As a user, I want to be able to view workouts for every day of the week specified as a workout day
+- As a user, I want to be able to view multiple different windows with information displayed on button press
 - As a user, I want my data to be saved everytime we exit the GUI

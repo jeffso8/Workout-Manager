@@ -69,7 +69,7 @@ public class WorkoutTest {
     }
 
     @Test
-    public void mondayWorkoutTest() {
+    public void dayWorkoutChestAndArmsTest() {
         //Store exercises in their correct container
         Exercise ex = new Exercise("Barbell Bench Press", CHEST, 225, 5, 5);
         testWorkout.storeExercise(ex);
@@ -83,13 +83,13 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex4);
 
         //Run mondayWorkout, and a list of exercises should be returned
-        testWorkout.mondayWorkout();
-        assertFalse(testWorkout.mondayWorkout().isEmpty());
-        assertEquals(testWorkout.mondayWorkout().size(), 5);
+        testWorkout.dayWorkout("Chest & Arms");
+        assertFalse(testWorkout.dayWorkout("Chest & Arms").isEmpty());
+        assertEquals(testWorkout.dayWorkout("Chest & Arms").size(), 5);
     }
 
     @Test
-    public void tuesdayWorkoutTest() {
+    public void dayWorkoutLegsTest() {
         //Store exercises in their correct container
         Exercise ex = new Exercise("Back Squats", LEGS, 225, 5,5);
         testWorkout.storeExercise(ex);
@@ -104,14 +104,14 @@ public class WorkoutTest {
 
         //Run tuesdayWorkout, and a list of exercises should be returned
 
-        System.out.println(testWorkout.tuesdayWorkout());
-        assertFalse(testWorkout.tuesdayWorkout().isEmpty());
-        assertEquals(testWorkout.tuesdayWorkout().size(), 4);
+        System.out.println(testWorkout.dayWorkout("Legs"));
+        assertFalse(testWorkout.dayWorkout("Legs").isEmpty());
+        assertEquals(testWorkout.dayWorkout("Legs").size(), 4);
 
     }
 
     @Test
-    public void wednesdayWorkoutTest() {
+    public void dayWorkoutShouldersAndArmsTest() {
         //Store exercises in their correct container
         Exercise ex = new Exercise("Overhead Press", SHOULDERS, 125,4,8);
         testWorkout.storeExercise(ex);
@@ -127,13 +127,13 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex5);
 
         //Run wednesdayWorkout, and a list of exercises should be returned
-        testWorkout.wednesdayWorkout();
-        assertFalse(testWorkout.wednesdayWorkout().isEmpty());
-        assertEquals(testWorkout.wednesdayWorkout().size(), 6);
+        testWorkout.dayWorkout("Shoulder & Arms");
+        assertFalse(testWorkout.dayWorkout("Shoulder & Arms").isEmpty());
+        assertEquals(testWorkout.dayWorkout("Shoulder & Arms").size(), 6);
     }
 
     @Test
-    public void thursdayWorkoutTest() {
+    public void dayWorkoutChestAndBackTest() {
         //Store exercises in their correct container
         Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
         testWorkout.storeExercise(ex);
@@ -149,9 +149,31 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex5);
 
         //Run thursdayWorkout, and a list of exercises should be returned
-        testWorkout.thursdayWorkout();
-        assertFalse(testWorkout.thursdayWorkout().isEmpty());
-        assertEquals(testWorkout.thursdayWorkout().size(), 4);
+        testWorkout.dayWorkout("Chest & Back");
+        assertFalse(testWorkout.dayWorkout("Chest & Back").isEmpty());
+        assertEquals(testWorkout.dayWorkout("Chest & Back").size(), 4);
+    }
+
+    @Test
+    public void dayWorkoutRestTest() {
+        //Store exercises in their correct container
+        Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
+        testWorkout.storeExercise(ex);
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Seated Cable Rows", BACK,50,4,3);
+        testWorkout.storeExercise(ex2);
+        Exercise ex3 = new Exercise("Pull-ups", BACK,0,6,6);
+        testWorkout.storeExercise(ex3);
+        Exercise ex4 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex4);
+        Exercise ex5 = new Exercise("Rest", REST,0,0,0);
+        testWorkout.storeExercise(ex5);
+
+        //Run thursdayWorkout, and a list of exercises should be returned
+        testWorkout.dayWorkout("Rest");
+        assertFalse(testWorkout.dayWorkout("Rest").isEmpty());
+        assertEquals(testWorkout.dayWorkout("Rest").size(), 1);
     }
 
     @Test

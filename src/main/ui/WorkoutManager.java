@@ -95,20 +95,22 @@ public class WorkoutManager {
     //MODIFIES: this
     //EFFECTS: prints the exercises for the given day
     private void viewWorkoutToday() {
-        System.out.println("Please enter the current day (MONDAY, TUESDAY, WEDNESDAY, ETC.)");
-        String day = scanner.nextLine().toUpperCase();
-        switch (day) {
+        System.out.println("Please enter the current day (Monday, Tuesday, Wednesday, ETC.)");
+        String day = scanner.nextLine();
+        String muscleGroup = workout.getWorkoutPlanner().get(day);
+        String days = scanner.nextLine().toUpperCase();
+        switch (days) {
             case "MONDAY":
-                printWorkoutStats(workout.mondayWorkout());
+                printWorkoutStats(workout.dayWorkout(muscleGroup));
                 break;
             case "TUESDAY":
-                printWorkoutStats(workout.tuesdayWorkout());
+                printWorkoutStats(workout.dayWorkout(muscleGroup));
                 break;
             case "WEDNESDAY":
-                printWorkoutStats(workout.wednesdayWorkout());
+                printWorkoutStats(workout.dayWorkout(muscleGroup));
                 break;
             case "THURSDAY":
-                printWorkoutStats(workout.thursdayWorkout());
+                printWorkoutStats(workout.dayWorkout(muscleGroup));
                 break;
             default: System.out.println("Today is your rest day!");
         }

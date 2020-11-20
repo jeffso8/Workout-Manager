@@ -7,9 +7,15 @@ import model.Workout;
 import persistence.Reader;
 import persistence.Writer;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +51,7 @@ public class WorkoutManagerProgram extends JFrame {
     private void initializeGraphics() {
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
         createMenus();
@@ -78,7 +84,8 @@ public class WorkoutManagerProgram extends JFrame {
         fileMenu();
         JMenu addExercise = new JMenu("Add Exercise");
         exerciseMenu(addExercise);
-        workoutMenu();
+        JMenu editWorkout = new JMenu("Edit Workout");
+        workoutMenu(editWorkout);
     }
 
     //MODIFIES: this
@@ -125,7 +132,7 @@ public class WorkoutManagerProgram extends JFrame {
     //MODIFIES: this
     //EFFECTS: adds a button to bottom panel that opens the selected exercise item
     private void addButtonViewExercise() {
-        openButton = new JButton(new AbstractAction("Open Exercise") {
+        openButton = new JButton(new AbstractAction("View Exercise") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = exerciseStringList.getSelectedIndex();
@@ -141,26 +148,6 @@ public class WorkoutManagerProgram extends JFrame {
         openButton.setVisible(true);
         buttonPane.setVisible(true);
     }
-
-//    //MODIFIES: this
-//    //EFFECTS: adds a button to bottom panel that opens the selected exercise item for individual workout days
-//    private void addButtonMakeWorkout() {
-//        openButton = new JButton(new AbstractAction("Add to Workout") {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                int index = workoutStringList.getSelectedIndex();
-//                Exercise selectedItem = workoutList.get(index);
-//                displayPopupExercise(selectedItem);
-//            }
-//        });
-//        openButton.setFont(new Font("System", Font.PLAIN, 20));
-//        buttonPane = new JPanel();
-//        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
-//        buttonPane.add(openButton);
-//        mainPane.add(buttonPane, gbcButton);
-//        openButton.setVisible(true);
-//        buttonPane.setVisible(true);
-//    }
 
     //MODIFIES: this
     //EFFECTS: adds sub menu items to exercises menu tab
@@ -238,15 +225,32 @@ public class WorkoutManagerProgram extends JFrame {
     }
 
     //MODIFIES: this
+    //EFFECTS: plays a specific sound for each given exerciseType
+    private void addExerciseSounds(ExerciseType exerciseType) {
+        switch (exerciseType) {
+            case SHOULDERS:
+                playSound(ADD_SHOULDER_EX);
+                break;
+            case ARMS:
+                playSound(ADD_ARM_EX);
+                break;
+            case LEGS:
+                playSound(ADD_LEG_EX);
+                break;
+            case BACK:
+                playSound(ADD_BACK_EX);
+                break;
+            case CHEST:
+                playSound(ADD_CHEST_EX);
+                break;
+        }
+    }
+
+    //MODIFIES: this
     //EFFECTS: adds a dropdown menu to workouts
-    private void workoutMenu() {
-//        JMenu addWorkout = new JMenu(new AbstractAction("Add Workout") {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                addWorkout();
-//            }
-//        });
-//        workouts.add(addWorkout);
+    private void workoutMenu(JMenu editWorkout) {
+        workouts.add(editWorkout);
+        workoutOptionsMenu(editWorkout);
         JMenuItem mondayWorkout = new JMenuItem(new AbstractAction("Monday") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -281,12 +285,87 @@ public class WorkoutManagerProgram extends JFrame {
             }
         });
         workouts.add(thursdayWorkout);
+        workoutMenuMoreContinued();
+    }
+
+    //MODIFIES: this
+    //EFFECTS: continues dropdown menu to workouts
+    private void workoutMenuMoreContinued() {
+        JMenuItem fridayWorkout = new JMenuItem(new AbstractAction("Friday") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                workoutDay("Friday");
+            }
+        });
+        workouts.add(fridayWorkout);
+        JMenuItem saturdayWorkout = new JMenuItem(new AbstractAction("Saturday") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                workoutDay("Saturday");
+            }
+        });
+        workouts.add(saturdayWorkout);
+        JMenuItem sundayWorkout = new JMenuItem(new AbstractAction("Sunday") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                workoutDay("Sunday");
+            }
+        });
+        workouts.add(sundayWorkout);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: adds submenu to Edit Workout
+    private void workoutOptionsMenu(JMenu editWorkout) {
+        JMenuItem editWorkoutType = new JMenuItem(new AbstractAction("Change Workout Muscle Group") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pickDayEdit();
+            }
+        });
+        editWorkout.add(editWorkoutType);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: creates a pop up menu that allows you to pick which day workout you wish to edit
+    private void pickDayEdit() {
+        String daySelection = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "\n\nWhat workout day would you like to edit?", "Pick Day To Edit",
+                JOptionPane.INFORMATION_MESSAGE, EDIT, myWorkout.getWorkoutDays().toArray(), "Monday");
+        if (daySelection != null) {
+            changeWorkoutType(daySelection);
+        } else {
+            informationMessage("Edit Window closed","Cancelled");
+        }
+    }
+
+    //EFFECTS: displays the muscle group for the given day
+    private String displayDayMuscleGroup(String daySelection) {
+        return myWorkout.getWorkoutPlanner().get(daySelection);
+    }
+
+    //MODIFIES:this, Workout
+    //EFFECTS: Creates a menu with a dropdown to select what type of workout you want to change this day to
+    private void changeWorkoutType(String daySelection) {
+        String [] typeOptions = new String[] {"Chest & Arms", "Shoulder & Arms", "Legs", "Chest & Back", "Rest"};
+        String editSelection = (String) JOptionPane.showInputDialog(WorkoutManagerProgram.this,
+                "This day currently has the following Muscle Group:\n"
+                + displayDayMuscleGroup(daySelection) + "\n\nWhat would you like to change it to?", "Details",
+                 JOptionPane.INFORMATION_MESSAGE, EDIT, typeOptions,"Chest & Arms");
+
+        if (editSelection != null) {
+            myWorkout.getWorkoutPlanner().replace(daySelection, editSelection);
+            workoutDay(daySelection);
+        } else {
+            pickDayEdit();
+        }
     }
 
     //MODIFIES: this
     //EFFECTS: creates a new label and workout list for each workout day
     private void workoutDay(String weekday) {
         eastLabelPanel.remove(workoutDayLabel);
+        String selectedDayGroup = myWorkout.getWorkoutPlanner().get(weekday);
         switch (weekday) {
             case "Monday":
                 createExerciseList(myWorkout.mondayWorkout());
@@ -301,12 +380,35 @@ public class WorkoutManagerProgram extends JFrame {
                 createExerciseList(myWorkout.thursdayWorkout());
                 break;
         }
+        workoutDayContinued(weekday);
     }
 
-//    private void addWorkout() {
-//
-//    }
-
+    //MODIFIES: this
+    //EFFECTS: creates a new label and workout list for each workout day continued
+    private void workoutDayContinued(String weekday) {
+        String selectedDayGroup = myWorkout.getWorkoutPlanner().get(weekday);
+        switch (weekday) {
+            case "Thursday":
+                workoutDayLabel = new JLabel("Thursday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
+                break;
+            case "Friday":
+                workoutDayLabel = new JLabel("Friday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
+                break;
+            case "Saturday":
+                workoutDayLabel = new JLabel("Saturday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
+                break;
+            case "Sunday":
+                workoutDayLabel = new JLabel("Sunday Workout");
+                removeWorkoutElements();
+                createWorkoutList(myWorkout.dayWorkout(selectedDayGroup));
+        }
+    }
 
     //https://stackoverflow.com/questions/11494222/how-to-handle-cancel-button-in-joptionpane/11494262
     //MODIFIES: this
@@ -398,6 +500,7 @@ public class WorkoutManagerProgram extends JFrame {
         }
     }
 
+    //MODIFIES: Exercise, this
     //EFFECTS: helper for edit menu to decrease method length, and ease of understanding, if the selection is equal
     private void editMenuSelections(String selection, Exercise ex, String changedValue) {
         switch (selection) {
@@ -418,6 +521,7 @@ public class WorkoutManagerProgram extends JFrame {
         }
         informationMessage("The " + selection + " is now " + changedValue + "!", "Item Edited");
         updateExerciseList();
+        playSound(EDIT_SOUND);
     }
 
     //EFFECTS: prints out the information of the selected exercise
@@ -427,6 +531,7 @@ public class WorkoutManagerProgram extends JFrame {
             + "\nReps: " + exercise.getReps();
     }
 
+    //MODIFIES: this
     //EFFECTS: adds the inputted exercise to the list of exercises
     private void addInputExercise(ExerciseType type) {
         String name = collectName(type.toString());
@@ -442,8 +547,9 @@ public class WorkoutManagerProgram extends JFrame {
         try {
             myWorkout.addExerciseFromButton(addedExercise);
             updateExerciseList();
+            addExerciseSounds(type);
         } catch (InWorkoutException e) {
-            System.out.println("This exercise already exists...");
+            errorMessage("This exercise already exists...");
         }
     }
 
@@ -517,6 +623,7 @@ public class WorkoutManagerProgram extends JFrame {
         file.add(load);
     }
 
+    //MODIFIES: this
     //EFFECTS: saves the workout to file
     private void saveWorkout() {
         Writer writer;
@@ -555,6 +662,20 @@ public class WorkoutManagerProgram extends JFrame {
     private void errorMessage(String message) {
         JOptionPane.showMessageDialog(WorkoutManagerProgram.this, message, "Error",
                 JOptionPane.ERROR_MESSAGE);
+    }
+
+    //https://stackoverflow.com/questions/15526255/best-way-to-get-sound-on-button-press-for-a-java-calculator
+    //MODIFIES: this
+    //EFFECTS: plays the sound with given file path
+    private void playSound(String url) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(url));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception e) {
+            errorMessage("This sound cannot be played or it could not be found");
+        }
     }
 
 
