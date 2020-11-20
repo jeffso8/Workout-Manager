@@ -177,6 +177,26 @@ public class WorkoutTest {
     }
 
     @Test
+    public void dayWorkoutNullTest() {
+        //Store exercises in their correct container
+        Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
+        testWorkout.storeExercise(ex);
+        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        testWorkout.storeExercise(ex1);
+        Exercise ex2 = new Exercise("Seated Cable Rows", BACK,50,4,3);
+        testWorkout.storeExercise(ex2);
+        Exercise ex3 = new Exercise("Pull-ups", BACK,0,6,6);
+        testWorkout.storeExercise(ex3);
+        Exercise ex4 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex4);
+        Exercise ex5 = new Exercise("Rest", REST,0,0,0);
+        testWorkout.storeExercise(ex5);
+
+        //Run thursdayWorkout, and a list of exercises should be returned
+        assertEquals(null,testWorkout.dayWorkout("Abs"));
+    }
+
+    @Test
     public void addExerciseFromButtonTestNoException() {
         Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
         Exercise ex3 = new Exercise("Bicep Curls", ARMS, 30, 3, 3);

@@ -58,9 +58,12 @@ public class ExerciseTest {
         Exercise ex2 = new Exercise("Bench Press", ExerciseType.CHEST, 225, 5, 5);
         Exercise ex3 = new Exercise("Incline Bench Press", ExerciseType.CHEST, 225, 5, 5);
         Exercise ex4 = null;
+        Workout ex5 = new Workout();
         assertTrue(testExercise.equals(ex2));
         assertFalse(testExercise.equals(ex3));
         assertFalse(testExercise.equals(ex4));
+        assertFalse(testExercise.equals(ex5));
+        assertTrue(testExercise.hashCode() == ex2.hashCode());
     }
 
     @Test
