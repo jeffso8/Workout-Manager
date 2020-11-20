@@ -105,8 +105,6 @@ public class WorkoutTest {
         testWorkout.storeExercise(ex4);
 
         //Run tuesdayWorkout, and a list of exercises should be returned
-
-        System.out.println(testWorkout.dayWorkout("Legs"));
         assertFalse(testWorkout.dayWorkout("Legs").isEmpty());
         assertEquals(testWorkout.dayWorkout("Legs").size(), 4);
 
@@ -180,14 +178,22 @@ public class WorkoutTest {
 
     @Test
     public void addExerciseFromButtonTestNoException() {
-        Exercise ex = new Exercise("Sumo Deadlift", BACK, 225,5,5);
-        testWorkout.storeExercise(ex);
-        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
-        testWorkout.storeExercise(ex1);
         Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        Exercise ex3 = new Exercise("Bicep Curls", ARMS, 30, 3, 3);
+        Exercise ex4 = new Exercise("Overhead Press", SHOULDERS, 120, 4, 8);
+        Exercise ex5 = new Exercise("Deadlifts", BACK, 225, 3, 5);
+        Exercise ex6 = new Exercise("Squats", LEGS, 225, 5, 5);
         try {
             testWorkout.addExerciseFromButton(ex2);
             assertEquals(1, testWorkout.getChestExercises().size());
+            testWorkout.addExerciseFromButton(ex3);
+            assertEquals(1, testWorkout.getArmExercises().size());
+            testWorkout.addExerciseFromButton(ex4);
+            assertEquals(1, testWorkout.getShoulderExercises().size());
+            testWorkout.addExerciseFromButton(ex5);
+            assertEquals(1, testWorkout.getBackExercises().size());
+            testWorkout.addExerciseFromButton(ex6);
+            assertEquals(1, testWorkout.getLegExercises().size());
         } catch (InWorkoutException e) {
             fail();
         }
@@ -229,12 +235,23 @@ public class WorkoutTest {
 
     @Test
     public void removeExerciseTestContains() {
-        Exercise ex1 = new Exercise("Good Morning Extensions", BACK,35,3,4);
+        Exercise ex1 = new Exercise("Bicep Curls", ARMS, 30, 3, 3);
         testWorkout.storeExercise(ex1);
-        Exercise ex2 = new Exercise("Push-ups", CHEST,0,6,15);
+        Exercise ex2 = new Exercise("Overhead Press", SHOULDERS, 120, 4, 8);
         testWorkout.storeExercise(ex2);
+        Exercise ex3 = new Exercise("Deadlifts", BACK, 225, 3, 5);
+        testWorkout.storeExercise(ex3);
+        Exercise ex4 = new Exercise("Squats", LEGS, 225, 5, 5);
+        testWorkout.storeExercise(ex4);
+        Exercise ex5 = new Exercise("Push-ups", CHEST,0,6,15);
+        testWorkout.storeExercise(ex5);
+        assertEquals(5, testWorkout.getAllExercises().size());
+        assertTrue(testWorkout.removeExercise("Bicep Curls"));
+        assertTrue(testWorkout.removeExercise("Overhead Press"));
+        assertTrue(testWorkout.removeExercise("Deadlifts"));
+        assertTrue(testWorkout.removeExercise("Squats"));
         assertTrue(testWorkout.removeExercise("Push-ups"));
-        assertEquals(1, testWorkout.getAllExercises().size());
+        assertTrue(testWorkout.getAllExercises().isEmpty());
     }
 
     @Test
@@ -252,7 +269,6 @@ public class WorkoutTest {
         JSONObject json = testWorkout.toJson();
         JSONArray jsonArray = json.getJSONArray("all-exercises");
         JSONObject jsonExercises = jsonArray.getJSONObject(0);
-        System.out.println(jsonExercises);
         String exerciseName = jsonExercises.getString("name");
         Object muscleType = jsonExercises.get("type");
 

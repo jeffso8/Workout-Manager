@@ -24,19 +24,31 @@ public class ExerciseTest {
     }
 
     @Test
-    public void setWeightTest(){
+    public void setWeightTest() {
         testExercise.setWeight(230);
         assertEquals(testExercise.getWeight(), 230);
     }
 
     @Test
-    public void setSetsTest(){
+    public void setTypeTest() {
+        testExercise.setType(ExerciseType.ARMS);
+        assertEquals(testExercise.getType(), ExerciseType.ARMS);
+    }
+
+    @Test
+    public void setNameTest() {
+        testExercise.setName("Bicep Curls");
+        assertEquals(testExercise.getName(), "Bicep Curls");
+    }
+
+    @Test
+    public void setSetsTest() {
         testExercise.setSets(4);
         assertEquals(testExercise.getSets(), 4);
     }
 
     @Test
-    public void setRepsTest(){
+    public void setRepsTest() {
         testExercise.setReps(12);
         assertEquals(testExercise.getReps(), 12);
     }
@@ -45,8 +57,10 @@ public class ExerciseTest {
     public void equalsTest() {
         Exercise ex2 = new Exercise("Bench Press", ExerciseType.CHEST, 225, 5, 5);
         Exercise ex3 = new Exercise("Incline Bench Press", ExerciseType.CHEST, 225, 5, 5);
+        Exercise ex4 = null;
         assertTrue(testExercise.equals(ex2));
         assertFalse(testExercise.equals(ex3));
+        assertFalse(testExercise.equals(ex4));
     }
 
     @Test
