@@ -44,4 +44,5 @@
 - As a user, I want to be able to add, update, remove and find individual exercises to and within the Workout class
 - As a user, I want to be able to view workouts for every day of the week specified as a workout day
 - As a user, I want to be able to view multiple different windows with information displayed on button press
+- As a user, I want to be able to configure workout days to specific muscle groups
 - As a user, I want my data to be saved everytime we exit the GUI
