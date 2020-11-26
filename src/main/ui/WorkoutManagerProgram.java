@@ -68,7 +68,6 @@ public class WorkoutManagerProgram extends JFrame {
     private JPanel eastLabelPanel = new JPanel();
 
 
-
     public WorkoutManagerProgram() {
         super("Workout Manager");
         isExercisesDisplayed = false;
